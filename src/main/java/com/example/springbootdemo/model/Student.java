@@ -1,15 +1,15 @@
 package com.example.springbootdemo.model;
 
 
-import jakarta.persistence.*;
+//import jakarta.persistence.*;
 
 
-@Entity
-@Table(name = "user") // 对应数据库里的 student 表
+//@Entity
+//@Table(name = "user") // 对应数据库里的 student 表
 public class Student   {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // 主键自增
-    private  Long id;
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY) // 主键自增
+    private  int id;
     private  String name;
     private String email;
     private String password;
@@ -17,14 +17,14 @@ public class Student   {
 
     public  Student(){}
 
-    public Student(Long id, String name, String email, String password) {
+    public Student(int id, String name, String email, String password) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.password = password;
     }
 
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
@@ -40,7 +40,7 @@ public class Student   {
         return password;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
