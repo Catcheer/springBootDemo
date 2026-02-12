@@ -1,5 +1,6 @@
 package com.example.springbootdemo.mapper;
 
+import com.example.springbootdemo.dto.StudentQuery;
 import com.example.springbootdemo.model.Student;
 import org.apache.ibatis.annotations.*;
 
@@ -8,19 +9,15 @@ import java.util.List;
 @Mapper
 public interface StudentServiceMapper {
 
-    // 分页查询（重点）
-    @Select("""
-                SELECT *
-                FROM student
-                LIMIT #{offset}, #{size}
-            """)
-    List<Student> findAll(
-            int offset,
-            int size);
+    // 分页 + 条件
+    List<Student> getStudents(
+            @Param("query") StudentQuery query,
+            @Param("offset") int offset,
+            @Param("size") int size
+    );
 
-    // 总数统计
-    @Select("SELECT COUNT(*) FROM student")
-    long count();
+    // 总数
+    long count(@Param("query") StudentQuery query);
 
     // 新增
     @Insert("""

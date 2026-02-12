@@ -2,6 +2,7 @@ package com.example.springbootdemo.controller;
 
 import com.example.springbootdemo.common.PageResult;
 import com.example.springbootdemo.common.Result;
+import com.example.springbootdemo.dto.StudentQuery;
 import com.example.springbootdemo.model.Student;
 import com.example.springbootdemo.service.StudentService;
 import org.springframework.web.bind.annotation.*;
@@ -19,11 +20,12 @@ public class StudentController {
 
     @GetMapping("/students")
     public Result<PageResult<Student>> listStudents(
+            StudentQuery query,
             @RequestParam(defaultValue = "1") Integer page,
             @RequestParam(defaultValue = "10") Integer size) {
 
-        List<Student> list = studentService.getAllStudents(page, size);
-        long total = studentService.count();
+        List<Student> list = studentService.getStudents(query,page, size);
+        long total = studentService.count(query);
         PageResult<Student> pageData = new PageResult<>(list, page, size, total);
         return Result.success(pageData);
     }

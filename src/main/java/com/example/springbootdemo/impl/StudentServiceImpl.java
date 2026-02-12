@@ -1,5 +1,6 @@
 package com.example.springbootdemo.impl;
 
+import com.example.springbootdemo.dto.StudentQuery;
 import com.example.springbootdemo.mapper.StudentServiceMapper;
 import com.example.springbootdemo.model.Student;
 //import com.example.springbootdemo.repository.StudentRepository;
@@ -21,9 +22,9 @@ public class StudentServiceImpl implements StudentService {
     // }
 
     @Override
-    public List<Student> getAllStudents(int page, int size) {
+    public List<Student> getStudents(StudentQuery query, int page, int size) {
         int offset = (page - 1) * size;
-        return studentServiceMapper.findAll(offset, size);
+        return studentServiceMapper.getStudents(query,offset, size);
     }
 
     @Override
@@ -42,7 +43,7 @@ public class StudentServiceImpl implements StudentService {
     };
 
     @Override
-    public long count() {
-        return studentServiceMapper.count();
+    public long count(StudentQuery query) {
+        return studentServiceMapper.count(query);
     }
 }

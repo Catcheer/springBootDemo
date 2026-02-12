@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.springbootdemo.mapper.StudentServiceMapper">
+
+    <!-- 公共条件 -->
+    <sql id="BaseWhere">
+        WHERE 1=1
+
+        <if test="query.studentNo != null and query.studentNo != ''">
+            AND student_no = #{query.studentNo}
+        </if>
+
+        <if test="query.name != null and query.name != ''">
+            AND name LIKE CONCAT('%', #{query.name}, '%')
+        </if>
+
+        <if test="query.gender != null and query.gender != ''">
+            AND gender = #{query.gender}
+        </if>
+
+    </sql>
+
+    <!-- 分页查询 -->
+    <select id="getStudents"
+            resultType="com.example.springbootdemo.model.Student">
+
+        SELECT *
+        FROM student
+
+        <include refid="BaseWhere"/>
+
+        LIMIT #{offset}, #{size}
+
+    </select>
+
+    <!-- 统计 -->
+    <select id="count"
+            resultType="long">
+
+        SELECT COUNT(*)
+        FROM student
+
+        <include refid="BaseWhere"/>
+
+    </select>
+
+</mapper>

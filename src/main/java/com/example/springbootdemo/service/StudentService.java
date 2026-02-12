@@ -1,10 +1,11 @@
 package com.example.springbootdemo.service;
 
+import com.example.springbootdemo.dto.StudentQuery;
 import com.example.springbootdemo.model.Student;
 import java.util.List;
 
 public interface StudentService {
-    List<Student> getAllStudents(int page, int size);
+    List<Student> getStudents(StudentQuery query, int page, int size);
 
     void addStudent(Student s);
 
@@ -12,5 +13,5 @@ public interface StudentService {
 
     void delStudent(int id);
 
-    long count(); // ✅ 新增
+    long count(StudentQuery query); // ✅ 新增
 }
