@@ -18,7 +18,7 @@ public class Student {
     private String gender;
     private String birthday;
     private String phone;
-    private int class_id;
+    private int classId;
     private String studentNo;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;

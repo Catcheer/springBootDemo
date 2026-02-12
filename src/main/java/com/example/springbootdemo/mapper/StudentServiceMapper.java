@@ -8,31 +8,43 @@ import java.util.List;
 @Mapper
 public interface StudentServiceMapper {
 
-        @Select("""
-                            SELECT * FROM `student`;
-                        """)
-        public List<Student> findAll();
+    // 分页查询（重点）
+    @Select("""
+                SELECT *
+                FROM student
+                LIMIT #{offset}, #{size}
+            """)
+    List<Student> findAll(
+            int offset,
+            int size);
 
-        @Insert("""
-                        INSERT INTO `student`
-                        (student_no,name,gender,birthday,phone,class_id)
-                        VALUES(#{student_no},#{name},#{gender},#{birthday},#{phone},#{class_id});
-                        """)
-        public void addStudent(Student student);
+    // 总数统计
+    @Select("SELECT COUNT(*) FROM student")
+    long count();
 
-        @Update("""
-                        UPDATE `student`
-                        SET name=#{name}
-                        SET gender=#{gender}
-                        SET birthday=#{birthday}
-                        SET phone=#{phone}
-                        SET class_id=#{class_id}
-                        WHERE id=#{id}
-                        """)
-        public void updateStudent(Student student);
+    // 新增
+    @Insert("""
+                INSERT INTO student
+                (student_no, name, gender, birthday, phone, class_id)
+                VALUES
+                (#{studentNo}, #{name}, #{gender}, #{birthday}, #{phone}, #{classId})
+            """)
+    void addStudent(Student student);
 
-        @Delete("""
-                        DELETE FROM `student` WHERE id=#{id}
-                        """)
-        void delStudent(String id);
+    // 修改
+    @Update("""
+                UPDATE student
+                SET
+                    name = #{name},
+                    gender = #{gender},
+                    birthday = #{birthday},
+                    phone = #{phone},
+                    class_id = #{classId}
+                WHERE id = #{id}
+            """)
+    void updateStudent(Student student);
+
+    // 删除
+    @Delete("DELETE FROM student WHERE id = #{id}")
+    void delStudent(int id);
 }

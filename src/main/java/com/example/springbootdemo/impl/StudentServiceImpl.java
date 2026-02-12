@@ -10,32 +10,39 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class StudentServiceImpl implements StudentService{
+public class StudentServiceImpl implements StudentService {
 
-//    private final StudentRepository studentRepository;
+    // private final StudentRepository studentRepository;
     @Autowired
-StudentServiceMapper studentServiceMapper;
+    StudentServiceMapper studentServiceMapper;
 
-//    public StudentServiceImpl(StudentRepository studentRepository){
-//        this.studentRepository = studentRepository;
-//    }
+    // public StudentServiceImpl(StudentRepository studentRepository){
+    // this.studentRepository = studentRepository;
+    // }
 
     @Override
-    public List<Student> getAllStudents(){
-        return studentServiceMapper.findAll();
+    public List<Student> getAllStudents(int page, int size) {
+        int offset = (page - 1) * size;
+        return studentServiceMapper.findAll(offset, size);
     }
 
     @Override
     public void addStudent(Student s) {
-         studentServiceMapper.addStudent(s);
+        studentServiceMapper.addStudent(s);
     }
 
     @Override
-    public  void  updateStudent(Student s){
+    public void updateStudent(Student s) {
         studentServiceMapper.updateStudent(s);
     };
+
     @Override
-    public void  delStudent(String id){
+    public void delStudent(int id) {
         studentServiceMapper.delStudent(id);
     };
+
+    @Override
+    public long count() {
+        return studentServiceMapper.count();
+    }
 }
