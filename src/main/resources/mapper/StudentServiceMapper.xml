@@ -5,46 +5,52 @@
 
 <mapper namespace="com.example.springbootdemo.mapper.StudentServiceMapper">
 
-    <!-- 公共条件 -->
     <sql id="BaseWhere">
         WHERE 1=1
-
         <if test="query.studentNo != null and query.studentNo != ''">
             AND student_no = #{query.studentNo}
         </if>
-
         <if test="query.name != null and query.name != ''">
             AND name LIKE CONCAT('%', #{query.name}, '%')
         </if>
-
         <if test="query.gender != null and query.gender != ''">
             AND gender = #{query.gender}
         </if>
-
     </sql>
 
-    <!-- 分页查询 -->
     <select id="getStudents"
             resultType="com.example.springbootdemo.model.Student">
-
         SELECT *
         FROM student
-
         <include refid="BaseWhere"/>
-
         LIMIT #{offset}, #{size}
-
     </select>
 
-    <!-- 统计 -->
     <select id="count"
             resultType="long">
-
         SELECT COUNT(*)
         FROM student
-
         <include refid="BaseWhere"/>
-
     </select>
+
+   <insert id="addStudent" parameterType="com.example.springbootdemo.model.Student" useGeneratedKeys="true">
+        INSERT INTO student
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="studentNo != null and studentNo != ''">student_no,</if>
+            <if test="name != null and name != ''">name,</if>
+            <if test="gender != null">gender,</if>
+            <if test="birthday != null">birthday,</if>
+            <if test="phone != null and phone != ''">phone,</if>
+            <if test="classId != null">class_id,</if>
+        </trim>
+        <trim prefix="VALUES (" suffix=")" suffixOverrides=",">
+            <if test="studentNo != null and studentNo != ''">#{studentNo},</if>
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="gender != null">#{gender},</if>
+            <if test="birthday != null">#{birthday},</if>
+            <if test="phone != null and phone != ''">#{phone},</if>
+            <if test="classId != null">#{classId},</if>
+        </trim>
+    </insert>
 
 </mapper>

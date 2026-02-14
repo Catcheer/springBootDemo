@@ -13,19 +13,12 @@ public interface StudentServiceMapper {
     List<Student> getStudents(
             @Param("query") StudentQuery query,
             @Param("offset") int offset,
-            @Param("size") int size
-    );
+            @Param("size") int size);
 
     // 总数
     long count(@Param("query") StudentQuery query);
 
     // 新增
-    @Insert("""
-                INSERT INTO student
-                (student_no, name, gender, birthday, phone, class_id)
-                VALUES
-                (#{studentNo}, #{name}, #{gender}, #{birthday}, #{phone}, #{classId})
-            """)
     void addStudent(Student student);
 
     // 修改

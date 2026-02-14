@@ -24,15 +24,17 @@ public class StudentController {
             @RequestParam(defaultValue = "1") Integer page,
             @RequestParam(defaultValue = "10") Integer size) {
 
-        List<Student> list = studentService.getStudents(query,page, size);
+        List<Student> list = studentService.getStudents(query, page, size);
         long total = studentService.count(query);
         PageResult<Student> pageData = new PageResult<>(list, page, size, total);
         return Result.success(pageData);
     }
 
     @PostMapping("/addStudent")
-    public void addStudent(@RequestBody Student s) {
+    public Result<Integer> addStudent(@RequestBody Student s) {
         studentService.addStudent(s);
+        int id = s.getId();
+        return Result.success(id);
     };
 
     @PostMapping("/updateStudent")
