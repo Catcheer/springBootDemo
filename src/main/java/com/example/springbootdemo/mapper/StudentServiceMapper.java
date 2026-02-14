@@ -22,16 +22,6 @@ public interface StudentServiceMapper {
     void addStudent(Student student);
 
     // 修改
-    @Update("""
-                UPDATE student
-                SET
-                    name = #{name},
-                    gender = #{gender},
-                    birthday = #{birthday},
-                    phone = #{phone},
-                    class_id = #{classId}
-                WHERE id = #{id}
-            """)
     void updateStudent(Student student);
 
     // 删除

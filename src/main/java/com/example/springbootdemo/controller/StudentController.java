@@ -38,12 +38,14 @@ public class StudentController {
     };
 
     @PostMapping("/updateStudent")
-    public void updateStudent(@RequestBody Student s) {
+    public Result<Integer> updateStudent(@RequestBody Student s) {
         studentService.updateStudent(s);
+        return Result.success(s.getId());
     };
 
     @DeleteMapping("/delStudent/{id}")
-    public void delStudent(@PathVariable("id") int id) {
+    public Result<Integer> delStudent(@PathVariable("id") int id) {
         studentService.delStudent(id);
+        return Result.success(id);
     };
 }

@@ -53,4 +53,17 @@
         </trim>
     </insert>
 
+    <update id="updateStudent" parameterType="com.example.springbootdemo.model.Student">
+        UPDATE student
+        <set>
+            <if test="studentNo != null and studentNo != ''">student_no = #{studentNo},</if>
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="gender != null">gender = #{gender},</if>
+            <if test="birthday != null">birthday = #{birthday},</if>
+            <if test="phone != null and phone != ''">phone = #{phone},</if>
+            <if test="classId != null">class_id = #{classId},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
 </mapper>
