@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import com.example.springbootdemo.mapper.UserServiceMapper;
 import com.example.springbootdemo.model.Userbase;
 import com.example.springbootdemo.service.UserService;
+import com.example.springbootdemo.utils.JwtUtil;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -15,8 +16,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String login(String username, String password) {
-        Userbase res = userServiceMapper.login(username, password);
-        System.out.println(res);
-        return "登录成功111";
+        // 查询数据库，验证用户名+密码
+        Userbase user = userServiceMapper.login(username, password);
+        if (user == null) {
+            // 用户不存在或密码错误
+            return null;
+        }
+        // 登录成功，生成 JWT token（以用户名作为 subject）
+        return JwtUtil.generateToken(user.getName());
     }
 }

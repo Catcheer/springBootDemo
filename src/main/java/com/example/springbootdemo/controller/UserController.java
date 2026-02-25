@@ -8,19 +8,21 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.springbootdemo.common.Result;
 import com.example.springbootdemo.dto.UserLogin;
-// import com.example.springbootdemo.impl.UserServiceImpl;
 import com.example.springbootdemo.service.UserService;
 
 @RestController
 @RequestMapping("/user")
 public class UserController {
+
     @Autowired
     UserService userService;
 
     @PostMapping("/login")
     public Result<String> login(@RequestBody UserLogin userLogin) {
-        System.out.println("用户名：" + userLogin.getUsername() + " 密码：" + userLogin.getPassword());
-        String msg = userService.login(userLogin.getUsername(), userLogin.getPassword());
-        return Result.success(msg);
+        String token = userService.login(userLogin.getUsername(), userLogin.getPassword());
+        if (token == null) {
+            return Result.error(401, "用户名或密码错误");
+        }
+        return Result.success(token);
     }
 }
