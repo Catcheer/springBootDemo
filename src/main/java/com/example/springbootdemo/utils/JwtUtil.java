@@ -13,7 +13,7 @@ public class JwtUtil {
     // 密钥（至少 32 位，生产环境请放到配置文件中）
     private static final String SECRET = "springBootDemoJwtSecretKey123456";
     // token 有效期：2 小时
-    private static final long EXPIRATION_MS = 2 * 60 * 60 * 1000L;
+    private static final long EXPIRATION_MS = 2 * 60 * 60 * 1000;
 
     private static final SecretKey KEY = Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
 

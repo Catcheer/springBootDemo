@@ -17,8 +17,12 @@ public class JwtInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request,
             HttpServletResponse response,
             Object handler) throws Exception {
-        // 从请求头中获取 token
-        String token = request.getHeader("Authorization");
+        // 从请求头中获取 token，并去掉 "Bearer " 前缀
+        String authHeader = request.getHeader("Authorization");
+        String token = null;
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            token = authHeader.substring(7); // 去掉 "Bearer " 前缀
+        }
 
         // token 不存在，或校验不通过 → 返回 401
         if (token == null || !JwtUtil.validateToken(token)) {

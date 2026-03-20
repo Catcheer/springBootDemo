@@ -16,6 +16,9 @@
         <if test="query.gender != null and query.gender != ''">
             AND gender = #{query.gender}
         </if>
+        <if test="query.birthDate != null and query.birthDate.size() == 2">
+            AND birthday BETWEEN #{query.birthDate[0]} AND #{query.birthDate[1]}
+        </if>
     </sql>
 
     <select id="getStudents"

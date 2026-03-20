@@ -18,15 +18,13 @@ public class StudentController {
         this.studentService = studentService;
     }
 
-    @GetMapping("/students")
-    public Result<PageResult<Student>> listStudents(
-            StudentQuery query,
-            @RequestParam(defaultValue = "1") Integer page,
-            @RequestParam(defaultValue = "10") Integer size) {
-
-        List<Student> list = studentService.getStudents(query, page, size);
+    @PostMapping("/students")
+    public Result<PageResult<Student>> listStudents(@RequestBody StudentQuery query) {
+        int page = query.getPage();
+        int pageSize = query.getPageSize();
+        List<Student> list = studentService.getStudents(query, page, pageSize);
         long total = studentService.count(query);
-        PageResult<Student> pageData = new PageResult<>(list, page, size, total);
+        PageResult<Student> pageData = new PageResult<>(list, page, pageSize, total);
         return Result.success(pageData);
     }
 
