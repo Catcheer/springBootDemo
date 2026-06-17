@@ -46,4 +46,9 @@ public class StudentServiceImpl implements StudentService {
     public long count(StudentQuery query) {
         return studentServiceMapper.count(query);
     }
+
+    @Override
+    public List<Student> getStudentsForExport(StudentQuery query) {
+        return studentServiceMapper.getStudentsForExport(query);
+    }
 }

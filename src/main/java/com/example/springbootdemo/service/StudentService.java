@@ -14,4 +14,6 @@ public interface StudentService {
     void delStudent(int id);
 
     long count(StudentQuery query); // ✅ 新增
+
+    List<Student> getStudentsForExport(StudentQuery query);
 }

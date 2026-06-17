@@ -4,8 +4,11 @@ import com.example.springbootdemo.common.PageResult;
 import com.example.springbootdemo.common.Result;
 import com.example.springbootdemo.dto.StudentQuery;
 import com.example.springbootdemo.model.Student;
+import com.example.springbootdemo.model.StudentExcelVO;
 import com.example.springbootdemo.service.StudentService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.bind.annotation.*;
+import com.alibaba.excel.EasyExcel;
 
 import java.util.List;
 
@@ -20,6 +23,7 @@ public class StudentController {
 
     @PostMapping("/students")
     public Result<PageResult<Student>> listStudents(@RequestBody StudentQuery query) {
+        System.out.println("/studentsController");
         int page = query.getPage();
         int pageSize = query.getPageSize();
         List<Student> list = studentService.getStudents(query, page, pageSize);
@@ -46,4 +50,54 @@ public class StudentController {
         studentService.delStudent(id);
         return Result.success(id);
     };
+
+
+    @PostMapping("/students/export")
+    public void exportStudents(
+            @RequestBody StudentQuery query,
+            HttpServletResponse response) throws Exception {
+
+        List<Student> list =
+                studentService.getStudentsForExport(query);
+
+        List<StudentExcelVO> excelList = list.stream()
+                .map(s -> {
+                    StudentExcelVO vo = new StudentExcelVO();
+
+                    vo.setStudentNo(s.getStudentNo());
+                    vo.setName(s.getName());
+                    vo.setGender(s.getGender());
+                    vo.setBirthday(
+                            s.getBirthday() == null
+                                    ? ""
+                                    : s.getBirthday().toString());
+
+                    vo.setPhone(s.getPhone());
+                    vo.setClassId(s.getClassId());
+                    vo.setClassName(s.getClassName());
+
+                    return vo;
+                })
+                .toList();
+
+        String fileName = "学生列表.xlsx";
+
+        response.setContentType(
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+
+        response.setCharacterEncoding("utf-8");
+
+        response.setHeader(
+                "Content-Disposition",
+                "attachment;filename=" +
+                        java.net.URLEncoder.encode(fileName, "UTF-8"));
+
+        EasyExcel.write(
+                        response.getOutputStream(),
+                        StudentExcelVO.class)
+                .sheet("学生信息")
+                .doWrite(excelList);
+    }
+
+
 }

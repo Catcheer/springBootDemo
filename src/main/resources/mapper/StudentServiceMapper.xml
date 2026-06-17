@@ -16,6 +16,9 @@
         <if test="query.gender != null and query.gender != ''">
             AND gender = #{query.gender}
         </if>
+        <if test="query.classId != null and query.classId != ''">
+            AND class_id = #{query.classId}
+        </if>
         <if test="query.birthDate != null and query.birthDate.size() == 2">
             AND birthday BETWEEN #{query.birthDate[0]} AND #{query.birthDate[1]}
         </if>
@@ -23,8 +26,12 @@
 
     <select id="getStudents"
             resultType="com.example.springbootdemo.model.Student">
-        SELECT *
-        FROM student
+        SELECT
+        s.*,
+        c.class_name AS className
+        FROM student s
+        LEFT JOIN class c
+        ON s.class_id = c.id
         <include refid="BaseWhere"/>
         LIMIT #{offset}, #{size}
     </select>
@@ -68,5 +75,17 @@
         </set>
         WHERE id = #{id}
     </update>
+
+
+    <select id="getStudentsForExport"
+            resultType="com.example.springbootdemo.model.Student">
+        SELECT
+        s.*,
+        c.class_name AS className
+        FROM student s
+        LEFT JOIN class c
+        ON s.class_id = c.id
+        <include refid="BaseWhere"/>
+    </select>
 
 </mapper>

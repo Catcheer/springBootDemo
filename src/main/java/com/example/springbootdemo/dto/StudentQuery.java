@@ -14,5 +14,6 @@ public class StudentQuery {
     private String studentNo;
     private String name;
     private String gender;
+    private Integer classId;
     private List<String> birthDate; // 日期范围，格式：["2000-01-01","2000-12-31"]
 }

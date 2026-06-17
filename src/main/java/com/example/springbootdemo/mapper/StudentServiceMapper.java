@@ -27,4 +27,8 @@ public interface StudentServiceMapper {
     // 删除
     @Delete("DELETE FROM student WHERE id = #{id}")
     void delStudent(int id);
+
+
+    List<Student> getStudentsForExport(
+            @Param("query") StudentQuery query);
 }
