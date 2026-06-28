@@ -1,12 +1,12 @@
 package com.example.springbootdemo.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.example.springbootdemo.mapper.UserServiceMapper;
 import com.example.springbootdemo.model.Userbase;
 import com.example.springbootdemo.service.UserService;
 import com.example.springbootdemo.utils.JwtUtil;
+import com.example.springbootdemo.utils.PasswordUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -16,13 +16,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String login(String username, String password) {
-        // 查询数据库，验证用户名+密码
-        Userbase user = userServiceMapper.login(username, password);
-        if (user == null) {
-            // 用户不存在或密码错误
+        if (username == null || password == null) {
             return null;
         }
-        // 登录成功，生成 JWT token（以用户名作为 subject）
+
+        Userbase user = userServiceMapper.findByUsername(username);
+        if (user == null) {
+            return null;
+        }
+
+        if (!PasswordUtil.matchesPassword(password, user.getPassword())) {
+            return null;
+        }
+
         return JwtUtil.generateToken(user.getName());
     }
 }
