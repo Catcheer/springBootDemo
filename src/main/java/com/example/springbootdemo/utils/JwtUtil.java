@@ -7,6 +7,8 @@ import io.jsonwebtoken.security.Keys;
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class JwtUtil {
 
@@ -16,6 +18,7 @@ public class JwtUtil {
     private static final long EXPIRATION_MS = 2 * 60 * 60 * 1000;
 
     private static final SecretKey KEY = Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
+    private static final Set<String> INVALIDATED_TOKENS = ConcurrentHashMap.newKeySet();
 
     /**
      * 生成 JWT token
@@ -54,11 +57,26 @@ public class JwtUtil {
      * @return true=合法，false=不合法
      */
     public static boolean validateToken(String token) {
+        if (token == null || INVALIDATED_TOKENS.contains(token)) {
+            return false;
+        }
+
         try {
             parseToken(token);
             return true;
         } catch (Exception e) {
             return false;
+        }
+    }
+
+    /**
+     * 将 token 标记为已失效，客户端退出登录后调用
+     *
+     * @param token JWT token 字符串
+     */
+    public static void invalidateToken(String token) {
+        if (token != null) {
+            INVALIDATED_TOKENS.add(token);
         }
     }
 
