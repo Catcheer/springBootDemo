@@ -29,6 +29,7 @@ public class UserServiceImpl implements UserService {
             return null;
         }
 
-        return JwtUtil.generateToken(user.getName());
+        // return user identifier (name) to let controller create access/refresh tokens
+        return user.getName();
     }
 }

@@ -15,7 +15,10 @@ public class JwtUtil {
     // 密钥（至少 32 位，生产环境请放到配置文件中）
     private static final String SECRET = "springBootDemoJwtSecretKey123456";
     // token 有效期：2 小时
-    private static final long EXPIRATION_MS = 2 * 60 * 60 * 1000;
+    // access token 有效期：2 小时
+    private static final long ACCESS_EXPIRATION_MS = 5* 1000;
+    // refresh token 有效期：7 天
+    private static final long REFRESH_EXPIRATION_MS = 7 * 24 * 60 * 60 * 1000L;
 
     private static final SecretKey KEY = Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
     private static final Set<String> INVALIDATED_TOKENS = ConcurrentHashMap.newKeySet();
@@ -27,10 +30,23 @@ public class JwtUtil {
      * @return token 字符串
      */
     public static String generateToken(String username) {
+        return generateAccessToken(username);
+    }
+
+    public static String generateAccessToken(String userId) {
         return Jwts.builder()
-                .subject(username)
+                .subject(userId)
                 .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + EXPIRATION_MS))
+                .expiration(new Date(System.currentTimeMillis() + ACCESS_EXPIRATION_MS))
+                .signWith(KEY)
+                .compact();
+    }
+
+    public static String generateRefreshToken(String userId) {
+        return Jwts.builder()
+                .subject(userId)
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + REFRESH_EXPIRATION_MS))
                 .signWith(KEY)
                 .compact();
     }
@@ -44,10 +60,10 @@ public class JwtUtil {
      */
     public static Claims parseToken(String token) {
         return Jwts.parser()
-                .verifyWith(KEY)
+                .setSigningKey(KEY)
                 .build()
-                .parseSignedClaims(token)
-                .getPayload();
+                .parseClaimsJws(token)
+                .getBody();
     }
 
     /**
@@ -88,5 +104,17 @@ public class JwtUtil {
      */
     public static String getUsernameFromToken(String token) {
         return parseToken(token).getSubject();
+    }
+
+    /**
+     * 解析 refresh token，返回 token 中的用户 id（subject）
+     */
+    public static String parseUserId(String token) {
+        if (token == null) return null;
+        try {
+            return parseToken(token).getSubject();
+        } catch (Exception e) {
+            return null;
+        }
     }
 }
