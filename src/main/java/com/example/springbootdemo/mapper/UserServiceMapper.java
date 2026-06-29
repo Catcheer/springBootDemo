@@ -5,8 +5,16 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
+import java.util.List;
+
 @Mapper
 public interface UserServiceMapper {
-    @Select("SELECT * FROM `user` WHERE name = #{username}")
+    @Select("SELECT * FROM `sys_user` WHERE name = #{username}")
     Userbase findByUsername(@Param("username") String username);
+
+    @Select("SELECT sr.role_code FROM `sys_user_role` sur JOIN `sys_role` sr ON sur.role_id = sr.id WHERE sur.user_id = #{userId}")
+    List<String> findRoleCodesByUserId(@Param("userId") Integer userId);
+
+    @Select("SELECT sp.permission_code FROM `sys_user_role` sur JOIN `sys_role_permission` srp ON sur.role_id = srp.role_id JOIN `sys_permission` sp ON srp.permission_id = sp.id WHERE sur.user_id = #{userId}")
+    List<String> findPermissionCodesByUserId(@Param("userId") Integer userId);
 }

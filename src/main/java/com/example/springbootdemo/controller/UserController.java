@@ -1,6 +1,7 @@
 package com.example.springbootdemo.controller;
 
 import com.example.springbootdemo.common.Result;
+import com.example.springbootdemo.dto.LoginResponseDTO;
 import com.example.springbootdemo.dto.UserLogin;
 import com.example.springbootdemo.dto.RefreshDTO;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -27,45 +28,40 @@ public class UserController {
     RedisTemplate<String, String> redisTemplate;
 
     @PostMapping("/login")
-    public Result<Map<String, String>> login(@RequestBody UserLogin userLogin) {
-        String userId = userService.login(userLogin.getUsername(), userLogin.getPassword());
-        if (userId == null) {
+    public Result<LoginResponseDTO> login(@RequestBody UserLogin userLogin) {
+        LoginResponseDTO loginResponse = userService.login(userLogin.getUsername(), userLogin.getPassword());
+
+        if (loginResponse == null) {
             return Result.error(401, "用户名或密码错误");
         }
 
-        String accessToken = JwtUtil.generateAccessToken(userId);
-        String refreshToken = JwtUtil.generateRefreshToken(userId);
-
-        // refreshToken 存 Redis（关键）
+        String userName = loginResponse.getUser().getUsername();
         redisTemplate.opsForValue()
-                .set("refresh:" + userId, refreshToken, 7, TimeUnit.DAYS);
+                .set("refresh:" + userName, loginResponse.getRefreshToken(), 7, TimeUnit.DAYS);
 
-        return Result.success(Map.of(
-                "accessToken", accessToken,
-                "refreshToken", refreshToken
-        ));
+        return Result.success(loginResponse);
     }
 
     @PostMapping("/refresh")
     public Result<Map<String, String>> refresh(@RequestBody RefreshDTO dto) {
-        String userId = JwtUtil.parseUserId(dto.getRefreshToken());
+        String userName = JwtUtil.parseUserId(dto.getRefreshToken());
 
-        if (userId == null) {
+        if (userName == null) {
             return Result.error(401, "refreshToken无效");
         }
 
         String redisToken = redisTemplate.opsForValue()
-                .get("refresh:" + userId);
+                .get("refresh:" + userName);
 
         if (redisToken == null || !dto.getRefreshToken().equals(redisToken)) {
             return Result.error(401, "refreshToken无效");
         }
 
-        String newAccessToken = JwtUtil.generateAccessToken(userId);
-        String newRefreshToken = JwtUtil.generateRefreshToken(userId);
+        String newAccessToken = JwtUtil.generateAccessToken(userName);
+        String newRefreshToken = JwtUtil.generateRefreshToken(userName);
 
         redisTemplate.opsForValue()
-                .set("refresh:" + userId, newRefreshToken, 7, TimeUnit.DAYS);
+                .set("refresh:" + userName, newRefreshToken, 7, TimeUnit.DAYS);
 
         return Result.success(Map.of(
                 "accessToken", newAccessToken,
