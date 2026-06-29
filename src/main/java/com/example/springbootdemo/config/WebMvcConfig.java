@@ -8,10 +8,16 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
 
+    private final JwtInterceptor jwtInterceptor;
+
+    public WebMvcConfig(JwtInterceptor jwtInterceptor) {
+        this.jwtInterceptor = jwtInterceptor;
+    }
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new JwtInterceptor())
-                .addPathPatterns("/**") // 拦截所有接口
-                .excludePathPatterns("/user/login", "/user/logout", "/user/refresh"); // 放开登录、退出和刷新接口
+        registry.addInterceptor(jwtInterceptor)
+                .addPathPatterns("/**")
+                .excludePathPatterns("/user/login", "/user/logout", "/user/refresh");
     }
 }
