@@ -3,6 +3,7 @@ package com.example.springbootdemo.impl;
 import com.example.springbootdemo.dto.LoginResponseDTO;
 import com.example.springbootdemo.mapper.UserServiceMapper;
 import com.example.springbootdemo.model.Userbase;
+import com.example.springbootdemo.utils.JwtUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -21,6 +22,9 @@ class UserServiceImplTest {
     @Mock
     private UserServiceMapper userServiceMapper;
 
+    @Mock
+    private JwtUtil jwtUtil;
+
     @InjectMocks
     private UserServiceImpl userService;
 
@@ -32,6 +36,8 @@ class UserServiceImplTest {
         user.setPassword("123456");
 
         when(userServiceMapper.findByUsername("admin")).thenReturn(user);
+        when(jwtUtil.generateAccessToken("admin")).thenReturn("access-token");
+        when(jwtUtil.generateRefreshToken("admin")).thenReturn("refresh-token");
         when(userServiceMapper.findRoleCodesByUserId(1)).thenReturn(List.of("ADMIN"));
         when(userServiceMapper.findPermissionCodesByUserId(1)).thenReturn(List.of(
                 "student:list",

@@ -18,9 +18,11 @@ public class JwtInterceptor implements HandlerInterceptor {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
     private final UserServiceMapper userServiceMapper;
+    private final JwtUtil jwtUtil;
 
-    public JwtInterceptor(UserServiceMapper userServiceMapper) {
+    public JwtInterceptor(UserServiceMapper userServiceMapper, JwtUtil jwtUtil) {
         this.userServiceMapper = userServiceMapper;
+        this.jwtUtil = jwtUtil;
     }
 
     @Override
@@ -33,12 +35,12 @@ public class JwtInterceptor implements HandlerInterceptor {
             token = authHeader.substring(7);
         }
 
-        if (token == null || !JwtUtil.validateToken(token)) {
+        if (token == null || !jwtUtil.validateToken(token)) {
             writeJson(response, HttpServletResponse.SC_UNAUTHORIZED, "token无效，请重新登录");
             return false;
         }
 
-        String username = JwtUtil.getUsernameFromToken(token);
+        String username = jwtUtil.getUsernameFromToken(token);
         List<String> roleCodes = userServiceMapper.findRoleCodesByUsername(username);
         List<String> permissionCodes = userServiceMapper.findPermissionCodesByUsername(username);
 

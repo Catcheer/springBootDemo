@@ -7,7 +7,6 @@ import com.example.springbootdemo.model.Userbase;
 import com.example.springbootdemo.service.UserService;
 import com.example.springbootdemo.utils.JwtUtil;
 import com.example.springbootdemo.utils.PasswordUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,8 +14,13 @@ import java.util.List;
 @Service
 public class UserServiceImpl implements UserService {
 
-    @Autowired
-    UserServiceMapper userServiceMapper;
+    private final UserServiceMapper userServiceMapper;
+    private final JwtUtil jwtUtil;
+
+    public UserServiceImpl(UserServiceMapper userServiceMapper, JwtUtil jwtUtil) {
+        this.userServiceMapper = userServiceMapper;
+        this.jwtUtil = jwtUtil;
+    }
 
     @Override
     public LoginResponseDTO login(String username, String password) {
@@ -34,8 +38,8 @@ public class UserServiceImpl implements UserService {
         }
 
         LoginResponseDTO response = new LoginResponseDTO();
-        response.setAccessToken(JwtUtil.generateAccessToken(user.getName()));
-        response.setRefreshToken(JwtUtil.generateRefreshToken(user.getName()));
+        response.setAccessToken(jwtUtil.generateAccessToken(user.getName()));
+        response.setRefreshToken(jwtUtil.generateRefreshToken(user.getName()));
 
         LoginUserDTO loginUser = new LoginUserDTO();
         loginUser.setId(user.getId());

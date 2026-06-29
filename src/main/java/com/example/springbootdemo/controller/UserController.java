@@ -10,7 +10,6 @@ import java.util.concurrent.TimeUnit;
 import com.example.springbootdemo.service.UserService;
 import com.example.springbootdemo.utils.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,11 +20,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/user")
 public class UserController {
 
-    @Autowired
-    UserService userService;
+    private final UserService userService;
+    private final RedisTemplate<String, String> redisTemplate;
+    private final JwtUtil jwtUtil;
 
-    @Autowired
-    RedisTemplate<String, String> redisTemplate;
+    public UserController(UserService userService, RedisTemplate<String, String> redisTemplate, JwtUtil jwtUtil) {
+        this.userService = userService;
+        this.redisTemplate = redisTemplate;
+        this.jwtUtil = jwtUtil;
+    }
 
     @PostMapping("/login")
     public Result<LoginResponseDTO> login(@RequestBody UserLogin userLogin) {
@@ -44,7 +47,7 @@ public class UserController {
 
     @PostMapping("/refresh")
     public Result<Map<String, String>> refresh(@RequestBody RefreshDTO dto) {
-        String userName = JwtUtil.parseUserId(dto.getRefreshToken());
+        String userName = jwtUtil.parseUserId(dto.getRefreshToken());
 
         if (userName == null) {
             return Result.error(401, "refreshToken无效");
@@ -57,8 +60,8 @@ public class UserController {
             return Result.error(401, "refreshToken无效");
         }
 
-        String newAccessToken = JwtUtil.generateAccessToken(userName);
-        String newRefreshToken = JwtUtil.generateRefreshToken(userName);
+        String newAccessToken = jwtUtil.generateAccessToken(userName);
+        String newRefreshToken = jwtUtil.generateRefreshToken(userName);
 
         redisTemplate.opsForValue()
                 .set("refresh:" + userName, newRefreshToken, 7, TimeUnit.DAYS);
@@ -74,7 +77,7 @@ public class UserController {
         String authHeader = request.getHeader("Authorization");
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             String token = authHeader.substring(7);
-            JwtUtil.invalidateToken(token);
+            jwtUtil.invalidateToken(token);
         }
         return Result.success("退出登录成功");
     }
