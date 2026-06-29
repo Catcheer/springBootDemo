@@ -5,6 +5,9 @@ import com.example.springbootdemo.dto.LoginResponseDTO;
 import com.example.springbootdemo.dto.UserLogin;
 import com.example.springbootdemo.dto.RefreshDTO;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.core.env.Environment;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import com.example.springbootdemo.service.UserService;
@@ -20,14 +23,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/user")
 public class UserController {
 
+    private static final Logger log = LoggerFactory.getLogger(UserController.class);
+
     private final UserService userService;
     private final RedisTemplate<String, String> redisTemplate;
     private final JwtUtil jwtUtil;
+    private final Environment env;
 
-    public UserController(UserService userService, RedisTemplate<String, String> redisTemplate, JwtUtil jwtUtil) {
+    public UserController(UserService userService, RedisTemplate<String, String> redisTemplate, JwtUtil jwtUtil, Environment env) {
         this.userService = userService;
         this.redisTemplate = redisTemplate;
         this.jwtUtil = jwtUtil;
+        this.env = env;
     }
 
     @PostMapping("/login")
@@ -39,8 +46,16 @@ public class UserController {
         }
 
         String userName = loginResponse.getUser().getUsername();
+        try {
+            log.info("RedisConnectionFactory class={}, spring.redis.host={}, SPRING_REDIS_HOST={}",
+                redisTemplate.getConnectionFactory() != null ? redisTemplate.getConnectionFactory().getClass().getName() : "null",
+                env.getProperty("spring.redis.host"), env.getProperty("SPRING_REDIS_HOST"));
+        } catch (Exception e) {
+            log.warn("Failed to log Redis info", e);
+        }
+
         redisTemplate.opsForValue()
-                .set("refresh:" + userName, loginResponse.getRefreshToken(), 7, TimeUnit.DAYS);
+            .set("refresh:" + userName, loginResponse.getRefreshToken(), 7, TimeUnit.DAYS);
 
         return Result.success(loginResponse);
     }
