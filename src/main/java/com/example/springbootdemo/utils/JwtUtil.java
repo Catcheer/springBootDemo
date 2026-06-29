@@ -16,7 +16,7 @@ public class JwtUtil {
     private static final String SECRET = "springBootDemoJwtSecretKey123456";
     // token 有效期：2 小时
     // access token 有效期：2 小时
-    private static final long ACCESS_EXPIRATION_MS = 5* 1000;
+    private static final long ACCESS_EXPIRATION_MS = 2 * 60 * 60 * 1000L;
     // refresh token 有效期：7 天
     private static final long REFRESH_EXPIRATION_MS = 7 * 24 * 60 * 60 * 1000L;
 
