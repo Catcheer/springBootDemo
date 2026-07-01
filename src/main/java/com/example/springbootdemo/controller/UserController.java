@@ -5,6 +5,7 @@ import com.example.springbootdemo.dto.LoginResponseDTO;
 import com.example.springbootdemo.dto.UserLogin;
 import com.example.springbootdemo.dto.RefreshDTO;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,11 +18,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/user")
 public class UserController {
+    
 
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
@@ -95,5 +99,19 @@ public class UserController {
             jwtUtil.invalidateToken(token);
         }
         return Result.success("退出登录成功");
+    }
+
+    @PostMapping("/upload/avatar")
+    public Result uploadAvatar(
+        @RequestParam MultipartFile file ,HttpServletRequest request) {
+            String authHeader = request.getHeader("Authorization");
+             String token = null;
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            token = authHeader.substring(7);
+        }
+             String userName = jwtUtil.getUsernameFromToken(token);
+        String avatarUrl = userService.uploadAvatar(userName, file);
+        return Result.success(avatarUrl);
+
     }
 }

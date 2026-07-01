@@ -23,4 +23,7 @@ public interface UserServiceMapper {
 
     @Select("SELECT sp.permission_code FROM `sys_user` su JOIN `sys_user_role` sur ON su.id = sur.user_id JOIN `sys_role_permission` srp ON sur.role_id = srp.role_id JOIN `sys_permission` sp ON srp.permission_id = sp.id WHERE su.name = #{username}")
     List<String> findPermissionCodesByUsername(@Param("username") String username);
+
+    @Select("UPDATE `sys_user` SET avatar = #{avatarPath} WHERE name = #{username}")
+    void updateAvatar(@Param("username") String username, @Param("avatarPath") String avatarPath);
 }
