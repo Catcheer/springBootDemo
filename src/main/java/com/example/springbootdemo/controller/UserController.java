@@ -2,6 +2,8 @@ package com.example.springbootdemo.controller;
 
 import com.example.springbootdemo.common.Result;
 import com.example.springbootdemo.dto.LoginResponseDTO;
+import com.example.springbootdemo.dto.LoginUserDTO;
+import com.example.springbootdemo.dto.UpdateUserDTO;
 import com.example.springbootdemo.dto.UserLogin;
 import com.example.springbootdemo.dto.RefreshDTO;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -117,14 +119,32 @@ public class UserController {
     @PostMapping("/upload/avatar")
     public Result uploadAvatar(
         @RequestParam MultipartFile file ,HttpServletRequest request) {
-            String authHeader = request.getHeader("Authorization");
-             String token = null;
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            token = authHeader.substring(7);
-        }
-             String userName = jwtUtil.getUsernameFromToken(token);
+        String userName = getUsernameFromRequest(request);
         String avatarUrl = userService.uploadAvatar(userName, file);
         return Result.success(avatarUrl);
 
+    }
+
+    @PostMapping("/update")
+    public Result<LoginUserDTO> updateUser(@RequestBody UpdateUserDTO updateUserDTO, HttpServletRequest request) {
+        String userName = getUsernameFromRequest(request);
+        LoginUserDTO updatedUser = userService.updateUser(userName, updateUserDTO);
+        if (updatedUser == null) {
+            return Result.error(404, "用户不存在或未登录");
+        }
+        return Result.success(updatedUser);
+    }
+
+    private String getUsernameFromRequest(HttpServletRequest request) {
+        String token = extractBearerToken(request);
+        return jwtUtil.getUsernameFromToken(token);
+    }
+
+    private String extractBearerToken(HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            return authHeader.substring(7);
+        }
+        return null;
     }
 }

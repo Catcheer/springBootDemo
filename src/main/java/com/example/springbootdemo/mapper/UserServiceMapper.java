@@ -33,4 +33,9 @@ public interface UserServiceMapper {
     void updateLoginInfo(@Param("username") String username,
                          @Param("lastLoginTime") LocalDateTime lastLoginTime,
                          @Param("lastLoginIp") String lastLoginIp);
+
+    void updateUserInfo(@Param("username") String username,
+                        @Param("email") String email,
+                        @Param("phone") String phone,
+                        @Param("nickName") String nickName);
 }

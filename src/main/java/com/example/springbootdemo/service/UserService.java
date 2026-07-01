@@ -3,6 +3,8 @@ package com.example.springbootdemo.service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.springbootdemo.dto.LoginResponseDTO;
+import com.example.springbootdemo.dto.LoginUserDTO;
+import com.example.springbootdemo.dto.UpdateUserDTO;
 
 public interface UserService {
     /**
@@ -10,6 +12,8 @@ public interface UserService {
      */
     LoginResponseDTO login(String username, String password, String loginIp);
 
+    // 修改当前用户信息
+    LoginUserDTO updateUser(String username, UpdateUserDTO updateUserDTO);
 
     // 头像上传
     String uploadAvatar(String username, MultipartFile file);

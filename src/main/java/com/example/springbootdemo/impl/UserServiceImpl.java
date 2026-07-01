@@ -2,6 +2,7 @@ package com.example.springbootdemo.impl;
 
 import com.example.springbootdemo.dto.LoginResponseDTO;
 import com.example.springbootdemo.dto.LoginUserDTO;
+import com.example.springbootdemo.dto.UpdateUserDTO;
 import com.example.springbootdemo.mapper.UserServiceMapper;
 import com.example.springbootdemo.model.Userbase;
 import com.example.springbootdemo.service.UserService;
@@ -77,6 +78,39 @@ public class UserServiceImpl implements UserService {
         response.setPermissions(permissions == null ? List.of() : permissions);
 
         return response;
+    }
+
+    @Override
+    public LoginUserDTO updateUser(String username, UpdateUserDTO updateUserDTO) {
+        Userbase existingUser = userServiceMapper.findByUsername(username);
+        if (existingUser == null) {
+            return null;
+        }
+
+        String email = updateUserDTO.getEmail();
+        String phone = updateUserDTO.getPhone();
+        String nickName = updateUserDTO.getNickName();
+
+        if (email == null && phone == null && nickName == null) {
+            return mapToLoginUserDTO(existingUser);
+        }
+
+        userServiceMapper.updateUserInfo(username, email, phone, nickName);
+        Userbase updatedUser = userServiceMapper.findByUsername(username);
+        return mapToLoginUserDTO(updatedUser);
+    }
+
+    private LoginUserDTO mapToLoginUserDTO(Userbase user) {
+        LoginUserDTO loginUser = new LoginUserDTO();
+        loginUser.setId(user.getId());
+        loginUser.setUsername(user.getName());
+        loginUser.setNickname(user.getNickName());
+        loginUser.setAvatar(user.getAvatar());
+        loginUser.setEmail(user.getEmail());
+        loginUser.setPhone(user.getPhone());
+        loginUser.setLastLoginTime(user.getLastLoginTime());
+        loginUser.setLastLoginIp(user.getLastLoginIp());
+        return loginUser;
     }
 
     //头像上传
