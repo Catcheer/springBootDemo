@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -36,7 +37,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public LoginResponseDTO login(String username, String password) {
+    public LoginResponseDTO login(String username, String password, String loginIp) {
         if (username == null || password == null) {
             return null;
         }
@@ -50,6 +51,11 @@ public class UserServiceImpl implements UserService {
             return null;
         }
 
+        LocalDateTime now = LocalDateTime.now();
+        userServiceMapper.updateLoginInfo(username, now, loginIp);
+        user.setLastLoginTime(now);
+        user.setLastLoginIp(loginIp);
+
         LoginResponseDTO response = new LoginResponseDTO();
         response.setAccessToken(jwtUtil.generateAccessToken(user.getName()));
         response.setRefreshToken(jwtUtil.generateRefreshToken(user.getName()));
@@ -61,6 +67,8 @@ public class UserServiceImpl implements UserService {
         loginUser.setAvatar(user.getAvatar());
         loginUser.setEmail(user.getEmail());
         loginUser.setPhone(user.getPhone());
+        loginUser.setLastLoginTime(user.getLastLoginTime());
+        loginUser.setLastLoginIp(user.getLastLoginIp());
         response.setUser(loginUser);
 
         List<String> roles = userServiceMapper.findRoleCodesByUserId(user.getId());

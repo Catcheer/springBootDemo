@@ -8,7 +8,7 @@ public interface UserService {
     /**
      * 登录验证，成功返回登录响应数据，用户不存在或密码错误返回 null
      */
-    LoginResponseDTO login(String username, String password);
+    LoginResponseDTO login(String username, String password, String loginIp);
 
 
     // 头像上传

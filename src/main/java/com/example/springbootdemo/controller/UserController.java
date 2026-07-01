@@ -42,8 +42,9 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public Result<LoginResponseDTO> login(@RequestBody UserLogin userLogin) {
-        LoginResponseDTO loginResponse = userService.login(userLogin.getUsername(), userLogin.getPassword());
+    public Result<LoginResponseDTO> login(@RequestBody UserLogin userLogin, HttpServletRequest request) {
+        String loginIp = getClientIp(request);
+        LoginResponseDTO loginResponse = userService.login(userLogin.getUsername(), userLogin.getPassword(), loginIp);
 
         if (loginResponse == null) {
             return Result.error(401, "用户名或密码错误");
@@ -62,6 +63,18 @@ public class UserController {
             .set("refresh:" + userName, loginResponse.getRefreshToken(), 7, TimeUnit.DAYS);
 
         return Result.success(loginResponse);
+    }
+
+    private String getClientIp(HttpServletRequest request) {
+        String ip = request.getHeader("X-Forwarded-For");
+        if (ip != null && !ip.isBlank()) {
+            return ip.split(",")[0].trim();
+        }
+        ip = request.getHeader("X-Real-IP");
+        if (ip != null && !ip.isBlank()) {
+            return ip;
+        }
+        return request.getRemoteAddr();
     }
 
     @PostMapping("/refresh")
