@@ -26,9 +26,6 @@ public class UserServiceImpl implements UserService {
     @Value("${file.upload-path}")
     private String uploadPath;
 
-    @Value("${file.upload-url}")
-    private String uploadUrl;
-
     private final UserServiceMapper userServiceMapper;
     private final JwtUtil jwtUtil;
 
@@ -60,7 +57,10 @@ public class UserServiceImpl implements UserService {
         LoginUserDTO loginUser = new LoginUserDTO();
         loginUser.setId(user.getId());
         loginUser.setUsername(user.getName());
-        loginUser.setNickname(user.getName());
+        loginUser.setNickname(user.getNickName());
+        loginUser.setAvatar(user.getAvatar());
+        loginUser.setEmail(user.getEmail());
+        loginUser.setPhone(user.getPhone());
         response.setUser(loginUser);
 
         List<String> roles = userServiceMapper.findRoleCodesByUserId(user.getId());
@@ -118,9 +118,8 @@ public class UserServiceImpl implements UserService {
     }
 
     String avatarPath = "avatar/" + fileName;
-    String avatarUrl = uploadUrl + "/avatar/" + fileName;
 
     userServiceMapper.updateAvatar(username, avatarPath);
-    return avatarUrl;
+    return avatarPath;
     }
 }
