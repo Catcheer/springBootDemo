@@ -71,6 +71,7 @@ public class UserServiceImpl implements UserService {
         loginUser.setPhone(user.getPhone());
         loginUser.setLastLoginTime(user.getLastLoginTime());
         loginUser.setLastLoginIp(user.getLastLoginIp());
+        loginUser.setCreateTime(user.getCreateTime());
         response.setUser(loginUser);
 
         List<String> roles = userServiceMapper.findRoleCodesByUserId(user.getId());
@@ -176,7 +177,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public LoginUserDTO createUser(UserCreateDTO createUserDTO) {
-        if (createUserDTO == null || createUserDTO.getUsername() == null || createUserDTO.getPassword() == null) {
+        if (createUserDTO == null || createUserDTO.getUsername() == null) {
             return null;
         }
 
@@ -187,11 +188,12 @@ public class UserServiceImpl implements UserService {
 
         Userbase user = new Userbase();
         user.setName(createUserDTO.getUsername());
-        user.setPassword(PasswordUtil.md5(createUserDTO.getPassword()));
+        if (createUserDTO.getPassword() != null && !createUserDTO.getPassword().isBlank()) {
+            user.setPassword(PasswordUtil.md5(createUserDTO.getPassword()));
+        }
         user.setEmail(createUserDTO.getEmail());
         user.setPhone(createUserDTO.getPhone());
         user.setNickName(createUserDTO.getNickName());
-        user.setAvatar(createUserDTO.getAvatar());
 
         userServiceMapper.insertUser(user);
         return getUserById(user.getId());
@@ -239,6 +241,7 @@ public class UserServiceImpl implements UserService {
         loginUser.setPhone(user.getPhone());
         loginUser.setLastLoginTime(user.getLastLoginTime());
         loginUser.setLastLoginIp(user.getLastLoginIp());
+        loginUser.setCreateTime(user.getCreateTime());
         return loginUser;
     }
 }

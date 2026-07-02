@@ -15,4 +15,5 @@ public class LoginUserDTO {
     private String phone;
     private LocalDateTime lastLoginTime;
     private String lastLoginIp;
+    private String createTime;
 }

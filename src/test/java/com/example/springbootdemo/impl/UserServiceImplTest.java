@@ -1,7 +1,9 @@
 package com.example.springbootdemo.impl;
 
 import com.example.springbootdemo.dto.LoginResponseDTO;
+import com.example.springbootdemo.dto.LoginUserDTO;
 import com.example.springbootdemo.dto.UpdateUserDTO;
+import com.example.springbootdemo.dto.UserCreateDTO;
 import com.example.springbootdemo.mapper.UserServiceMapper;
 import com.example.springbootdemo.model.Userbase;
 import com.example.springbootdemo.utils.JwtUtil;
@@ -17,6 +19,8 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -43,6 +47,38 @@ class UserServiceImplTest {
         assertEquals("www", dto.getNickName());
         assertEquals("15093117985", dto.getPhone());
         assertEquals("1072491556@qq.com", dto.getEmail());
+    }
+
+    @Test
+    void createUserShouldAllowMissingPasswordAndReturnCreateTime() {
+        UserCreateDTO createUserDTO = new UserCreateDTO();
+        createUserDTO.setUsername("new-user");
+        createUserDTO.setEmail("new@example.com");
+        createUserDTO.setPhone("13800000000");
+        createUserDTO.setNickName("new-user");
+
+        when(userServiceMapper.findByUsername("new-user")).thenReturn(null);
+
+        Userbase createdUser = new Userbase();
+        createdUser.setId(100);
+        createdUser.setName("new-user");
+        createdUser.setEmail("new@example.com");
+        createdUser.setPhone("13800000000");
+        createdUser.setNickName("new-user");
+        createdUser.setCreateTime("2024-01-01 10:00:00");
+        when(userServiceMapper.findById(100)).thenReturn(createdUser);
+
+        org.mockito.Mockito.doAnswer(invocation -> {
+            Userbase user = invocation.getArgument(0);
+            user.setId(100);
+            return null;
+        }).when(userServiceMapper).insertUser(any(Userbase.class));
+
+        LoginUserDTO result = userService.createUser(createUserDTO);
+
+        assertNotNull(result);
+        assertEquals("new-user", result.getUsername());
+        assertEquals("2024-01-01 10:00:00", result.getCreateTime());
     }
 
     @Test

@@ -15,4 +15,5 @@ public class Userbase {
     private String nickName;
     private LocalDateTime lastLoginTime;
     private String lastLoginIp;
+    private String createTime;
 }

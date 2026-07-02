@@ -10,4 +10,12 @@ public class UserQueryDTO {
     private String email;
     private String phone;
     private String nickName;
+
+    public String getUserName() {
+        return username;
+    }
+
+    public void setUserName(String userName) {
+        this.username = userName;
+    }
 }
