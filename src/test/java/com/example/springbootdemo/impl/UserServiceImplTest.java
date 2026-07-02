@@ -1,9 +1,11 @@
 package com.example.springbootdemo.impl;
 
 import com.example.springbootdemo.dto.LoginResponseDTO;
+import com.example.springbootdemo.dto.UpdateUserDTO;
 import com.example.springbootdemo.mapper.UserServiceMapper;
 import com.example.springbootdemo.model.Userbase;
 import com.example.springbootdemo.utils.JwtUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -14,6 +16,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -27,6 +30,20 @@ class UserServiceImplTest {
 
     @InjectMocks
     private UserServiceImpl userService;
+
+    @Test
+    void updateDtoShouldBindNicknameAlias() throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        UpdateUserDTO dto = objectMapper.readValue(
+                "{\"nickname\":\"www\",\"phone\":\"15093117985\",\"email\":\"1072491556@qq.com\"}",
+                UpdateUserDTO.class
+        );
+
+        assertEquals("www", dto.getNickName());
+        assertEquals("15093117985", dto.getPhone());
+        assertEquals("1072491556@qq.com", dto.getEmail());
+    }
 
     @Test
     void loginShouldReturnUserRolesAndPermissions() {

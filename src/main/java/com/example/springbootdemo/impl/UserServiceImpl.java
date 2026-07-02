@@ -150,14 +150,14 @@ public class UserServiceImpl implements UserService {
         int page = queryDTO.getPage() == null || queryDTO.getPage() < 1 ? 1 : queryDTO.getPage();
         int pageSize = queryDTO.getPageSize() == null || queryDTO.getPageSize() < 1 ? 10 : queryDTO.getPageSize();
 
-        String username = queryDTO.getUsername();
+        String userName = queryDTO.getUserName();
         String email = queryDTO.getEmail();
         String phone = queryDTO.getPhone();
         String nickName = queryDTO.getNickName();
 
         int offset = (page - 1) * pageSize;
-        List<Userbase> users = userServiceMapper.findUsersByCondition(username, email, phone, nickName, pageSize, offset);
-        long total = userServiceMapper.countUsersByCondition(username, email, phone, nickName);
+        List<Userbase> users = userServiceMapper.findUsersByCondition(userName, email, phone, nickName, pageSize, offset);
+        long total = userServiceMapper.countUsersByCondition(userName, email, phone, nickName);
         List<LoginUserDTO> list = users.stream()
                 .map(this::mapToLoginUserDTO)
                 .toList();
