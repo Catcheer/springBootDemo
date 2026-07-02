@@ -83,8 +83,8 @@ public class RoleServiceImpl implements RoleService {
                 id,
                 updateDTO.getRoleName(),
                 updateDTO.getRoleCode(),
-                updateDTO.getDescription()
-                // updateDTO.getStatus()
+                updateDTO.getDescription(),
+                null
         );
         return roleServiceMapper.findById(id);
     }
