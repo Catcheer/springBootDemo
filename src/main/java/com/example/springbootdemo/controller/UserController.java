@@ -1,33 +1,39 @@
 package com.example.springbootdemo.controller;
 
+import com.example.springbootdemo.common.PageResult;
 import com.example.springbootdemo.common.Result;
 import com.example.springbootdemo.dto.LoginResponseDTO;
 import com.example.springbootdemo.dto.LoginUserDTO;
-import com.example.springbootdemo.dto.UpdateUserDTO;
-import com.example.springbootdemo.dto.UserLogin;
 import com.example.springbootdemo.dto.RefreshDTO;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
+import com.example.springbootdemo.dto.UpdateUserDTO;
+import com.example.springbootdemo.dto.UserCreateDTO;
+import com.example.springbootdemo.dto.UserLogin;
+import com.example.springbootdemo.dto.UserQueryDTO;
 import com.example.springbootdemo.service.UserService;
 import com.example.springbootdemo.utils.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.core.env.Environment;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
 @RestController
 @RequestMapping("/user")
 public class UserController {
-    
 
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
@@ -55,14 +61,14 @@ public class UserController {
         String userName = loginResponse.getUser().getUsername();
         try {
             log.info("RedisConnectionFactory class={}, spring.redis.host={}, SPRING_REDIS_HOST={}",
-                redisTemplate.getConnectionFactory() != null ? redisTemplate.getConnectionFactory().getClass().getName() : "null",
-                env.getProperty("spring.redis.host"), env.getProperty("SPRING_REDIS_HOST"));
+                    redisTemplate.getConnectionFactory() != null ? redisTemplate.getConnectionFactory().getClass().getName() : "null",
+                    env.getProperty("spring.redis.host"), env.getProperty("SPRING_REDIS_HOST"));
         } catch (Exception e) {
             log.warn("Failed to log Redis info", e);
         }
 
         redisTemplate.opsForValue()
-            .set("refresh:" + userName, loginResponse.getRefreshToken(), 7, TimeUnit.DAYS);
+                .set("refresh:" + userName, loginResponse.getRefreshToken(), 7, TimeUnit.DAYS);
 
         return Result.success(loginResponse);
     }
@@ -117,12 +123,10 @@ public class UserController {
     }
 
     @PostMapping("/upload/avatar")
-    public Result uploadAvatar(
-        @RequestParam MultipartFile file ,HttpServletRequest request) {
+    public Result<String> uploadAvatar(@RequestParam MultipartFile file, HttpServletRequest request) {
         String userName = getUsernameFromRequest(request);
         String avatarUrl = userService.uploadAvatar(userName, file);
         return Result.success(avatarUrl);
-
     }
 
     @PostMapping("/update")
@@ -133,6 +137,47 @@ public class UserController {
             return Result.error(404, "用户不存在或未登录");
         }
         return Result.success(updatedUser);
+    }
+
+    @PostMapping("/list")
+    public Result<PageResult<LoginUserDTO>> listUsers(@RequestBody(required = false) UserQueryDTO queryDTO) {
+        return Result.success(userService.listUsers(queryDTO));
+    }
+
+    @GetMapping("/{id}")
+    public Result<LoginUserDTO> getUserById(@PathVariable Integer id) {
+        LoginUserDTO user = userService.getUserById(id);
+        if (user == null) {
+            return Result.error(404, "用户不存在");
+        }
+        return Result.success(user);
+    }
+
+    @PostMapping("/add")
+    public Result<LoginUserDTO> createUser(@RequestBody UserCreateDTO createUserDTO) {
+        LoginUserDTO createdUser = userService.createUser(createUserDTO);
+        if (createdUser == null) {
+            return Result.error(400, "用户名已存在或参数不合法");
+        }
+        return Result.success(createdUser);
+    }
+
+    @PutMapping("/update/{id}")
+    public Result<LoginUserDTO> updateUserById(@PathVariable Integer id, @RequestBody UpdateUserDTO updateUserDTO) {
+        LoginUserDTO updatedUser = userService.updateUserById(id, updateUserDTO);
+        if (updatedUser == null) {
+            return Result.error(404, "用户不存在");
+        }
+        return Result.success(updatedUser);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public Result<String> deleteUser(@PathVariable Integer id) {
+        boolean deleted = userService.deleteUser(id);
+        if (!deleted) {
+            return Result.error(404, "用户不存在");
+        }
+        return Result.success("删除成功");
     }
 
     private String getUsernameFromRequest(HttpServletRequest request) {

@@ -2,12 +2,34 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.springbootdemo.mapper.UserServiceMapper">
 
+    <select id="findUsersByCondition" resultType="com.example.springbootdemo.model.Userbase">
+        SELECT * FROM `sys_user`
+        <where>
+            <if test="username != null and username != ''">AND name LIKE CONCAT('%', #{username}, '%')</if>
+            <if test="email != null and email != ''">AND email LIKE CONCAT('%', #{email}, '%')</if>
+            <if test="phone != null and phone != ''">AND phone LIKE CONCAT('%', #{phone}, '%')</if>
+            <if test="nickName != null and nickName != ''">AND nickName LIKE CONCAT('%', #{nickName}, '%')</if>
+        </where>
+        ORDER BY id DESC
+        LIMIT #{pageSize} OFFSET #{offset}
+    </select>
+
+    <select id="countUsersByCondition" resultType="long">
+        SELECT COUNT(*) FROM `sys_user`
+        <where>
+            <if test="username != null and username != ''">AND name LIKE CONCAT('%', #{username}, '%')</if>
+            <if test="email != null and email != ''">AND email LIKE CONCAT('%', #{email}, '%')</if>
+            <if test="phone != null and phone != ''">AND phone LIKE CONCAT('%', #{phone}, '%')</if>
+            <if test="nickName != null and nickName != ''">AND nickName LIKE CONCAT('%', #{nickName}, '%')</if>
+        </where>
+    </select>
+
     <update id="updateUserInfo" parameterType="map">
         UPDATE `sys_user`
         <set>
             <if test="email != null">email = #{email},</if>
             <if test="phone != null">phone = #{phone},</if>
-            <if test="nickName != null">nick_name = #{nickName},</if>
+            <if test="nickName != null">nickName = #{nickName},</if>
         </set>
         WHERE name = #{username}
     </update>

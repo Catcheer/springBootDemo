@@ -1,7 +1,10 @@
 package com.example.springbootdemo.mapper;
 
 import com.example.springbootdemo.model.Userbase;
+import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
@@ -13,6 +16,21 @@ import java.util.List;
 public interface UserServiceMapper {
     @Select("SELECT * FROM `sys_user` WHERE name = #{username}")
     Userbase findByUsername(@Param("username") String username);
+
+    @Select("SELECT * FROM `sys_user` WHERE id = #{id}")
+    Userbase findById(@Param("id") Integer id);
+
+    List<Userbase> findUsersByCondition(@Param("username") String username,
+                                        @Param("email") String email,
+                                        @Param("phone") String phone,
+                                        @Param("nickName") String nickName,
+                                        @Param("pageSize") Integer pageSize,
+                                        @Param("offset") Integer offset);
+
+    long countUsersByCondition(@Param("username") String username,
+                               @Param("email") String email,
+                               @Param("phone") String phone,
+                               @Param("nickName") String nickName);
 
     @Select("SELECT sr.role_code FROM `sys_user_role` sur JOIN `sys_role` sr ON sur.role_id = sr.id WHERE sur.user_id = #{userId}")
     List<String> findRoleCodesByUserId(@Param("userId") Integer userId);
@@ -38,4 +56,17 @@ public interface UserServiceMapper {
                         @Param("email") String email,
                         @Param("phone") String phone,
                         @Param("nickName") String nickName);
+
+    @Insert("INSERT INTO `sys_user` (name, password, email, phone, nickName, avatar) VALUES (#{name}, #{password}, #{email}, #{phone}, #{nickName}, #{avatar})")
+    @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
+    void insertUser(Userbase user);
+
+    @Update("UPDATE `sys_user` SET email = #{email}, phone = #{phone}, nickName = #{nickName} WHERE id = #{id}")
+    int updateUserByAdmin(@Param("id") Integer id,
+                          @Param("email") String email,
+                          @Param("phone") String phone,
+                          @Param("nickName") String nickName);
+
+    @Delete("DELETE FROM `sys_user` WHERE id = #{id}")
+    int deleteUser(@Param("id") Integer id);
 }

@@ -46,7 +46,7 @@ class UserServiceImplTest {
                 "student:delete"
         ));
 
-        LoginResponseDTO result = userService.login("admin", "123456");
+        LoginResponseDTO result = userService.login("admin", "123456", "127.0.0.1");
 
         assertNotNull(result);
         assertEquals("admin", result.getUser().getUsername());
