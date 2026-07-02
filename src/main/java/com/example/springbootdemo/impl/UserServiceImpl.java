@@ -188,9 +188,9 @@ public class UserServiceImpl implements UserService {
 
         Userbase user = new Userbase();
         user.setName(createUserDTO.getUsername());
-        if (createUserDTO.getPassword() != null && !createUserDTO.getPassword().isBlank()) {
-            user.setPassword(PasswordUtil.md5(createUserDTO.getPassword()));
-        }
+        // if (createUserDTO.getPassword() != null && !createUserDTO.getPassword().isBlank()) {
+        //     user.setPassword(PasswordUtil.md5(createUserDTO.getPassword()));
+        // }
         user.setEmail(createUserDTO.getEmail());
         user.setPhone(createUserDTO.getPhone());
         user.setNickName(createUserDTO.getNickName());

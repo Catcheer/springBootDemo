@@ -57,7 +57,7 @@ public interface UserServiceMapper {
                         @Param("phone") String phone,
                         @Param("nickName") String nickName);
 
-    @Insert("INSERT INTO `sys_user` (name, password, email, phone, nickName, avatar) VALUES (#{name}, #{password}, #{email}, #{phone}, #{nickName}, #{avatar})")
+    @Insert("INSERT INTO `sys_user` (name, email, phone, nickName, avatar) VALUES (#{name}, #{email}, #{phone}, #{nickName}, #{avatar})")
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     void insertUser(Userbase user);
 
