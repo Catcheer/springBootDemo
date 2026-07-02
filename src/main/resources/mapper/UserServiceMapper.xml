@@ -5,10 +5,10 @@
     <select id="findUsersByCondition" resultType="com.example.springbootdemo.model.Userbase">
         SELECT * FROM `sys_user`
         <where>
-            <if test="username != null and username != ''">AND name LIKE CONCAT('%', #{username}, '%')</if>
-            <if test="email != null and email != ''">AND email LIKE CONCAT('%', #{email}, '%')</if>
-            <if test="phone != null and phone != ''">AND phone LIKE CONCAT('%', #{phone}, '%')</if>
-            <if test="nickName != null and nickName != ''">AND nickName LIKE CONCAT('%', #{nickName}, '%')</if>
+            <if test="queryDTO.userName != null and queryDTO.userName != ''">AND name LIKE CONCAT('%', #{queryDTO.userName}, '%')</if>
+            <if test="queryDTO.email != null and queryDTO.email != ''">AND email LIKE CONCAT('%', #{queryDTO.email}, '%')</if>
+            <if test="queryDTO.phone != null and queryDTO.phone != ''">AND phone LIKE CONCAT('%', #{queryDTO.phone}, '%')</if>
+            <if test="queryDTO.nickName != null and queryDTO.nickName != ''">AND nickName LIKE CONCAT('%', #{queryDTO.nickName}, '%')</if>
         </where>
         ORDER BY id DESC
         LIMIT #{pageSize} OFFSET #{offset}
@@ -17,10 +17,10 @@
     <select id="countUsersByCondition" resultType="long">
         SELECT COUNT(*) FROM `sys_user`
         <where>
-            <if test="username != null and username != ''">AND name LIKE CONCAT('%', #{username}, '%')</if>
-            <if test="email != null and email != ''">AND email LIKE CONCAT('%', #{email}, '%')</if>
-            <if test="phone != null and phone != ''">AND phone LIKE CONCAT('%', #{phone}, '%')</if>
-            <if test="nickName != null and nickName != ''">AND nickName LIKE CONCAT('%', #{nickName}, '%')</if>
+            <if test="queryDTO.userName != null and queryDTO.userName != ''">AND name LIKE CONCAT('%', #{queryDTO.userName}, '%')</if>
+            <if test="queryDTO.email != null and queryDTO.email != ''">AND email LIKE CONCAT('%', #{queryDTO.email}, '%')</if>
+            <if test="queryDTO.phone != null and queryDTO.phone != ''">AND phone LIKE CONCAT('%', #{queryDTO.phone}, '%')</if>
+            <if test="queryDTO.nickName != null and queryDTO.nickName != ''">AND nickName LIKE CONCAT('%', #{queryDTO.nickName}, '%')</if>
         </where>
     </select>
 

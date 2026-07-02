@@ -1,5 +1,6 @@
 package com.example.springbootdemo.mapper;
 
+import com.example.springbootdemo.dto.UserQueryDTO;
 import com.example.springbootdemo.model.Userbase;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
@@ -20,17 +21,14 @@ public interface UserServiceMapper {
     @Select("SELECT * FROM `sys_user` WHERE id = #{id}")
     Userbase findById(@Param("id") Integer id);
 
-    List<Userbase> findUsersByCondition(@Param("username") String username,
-                                        @Param("email") String email,
-                                        @Param("phone") String phone,
-                                        @Param("nickName") String nickName,
+    List<Userbase> findUsersByCondition(@Param("queryDTO") UserQueryDTO queryDTO,
+                                        // @Param("email") String email,
+                                        // @Param("phone") String phone,
+                                        // @Param("nickName") String nickName,
                                         @Param("pageSize") Integer pageSize,
                                         @Param("offset") Integer offset);
 
-    long countUsersByCondition(@Param("username") String username,
-                               @Param("email") String email,
-                               @Param("phone") String phone,
-                               @Param("nickName") String nickName);
+    long countUsersByCondition(@Param("queryDTO") UserQueryDTO queryDTO);
 
     @Select("SELECT sr.role_code FROM `sys_user_role` sur JOIN `sys_role` sr ON sur.role_id = sr.id WHERE sur.user_id = #{userId}")
     List<String> findRoleCodesByUserId(@Param("userId") Integer userId);
