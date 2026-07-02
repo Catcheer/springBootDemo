@@ -1,13 +1,11 @@
 package com.example.springbootdemo.model;
 
-import com.example.springbootdemo.dto.PermissionInfoDTO;
 import lombok.Data;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
-public class Role {
+public class RoleWithPermission {
     private Integer id;
     private String roleName;
     private String roleCode;
@@ -15,5 +13,6 @@ public class Role {
     private Integer status;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
-    private List<PermissionInfoDTO> permissions;
+    private String permissionCodes;
+    private String permissionNames;
 }

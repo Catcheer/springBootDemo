@@ -3,6 +3,8 @@ package com.example.springbootdemo.dto;
 import com.fasterxml.jackson.annotation.JsonAlias;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class RoleCreateDTO {
     @JsonAlias({"roleName", "role_name"})
@@ -12,5 +14,6 @@ public class RoleCreateDTO {
     private String roleCode;
 
     private String description;
+    private List<String> permissions;
     // private Integer status;
 }
