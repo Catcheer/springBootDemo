@@ -2,23 +2,36 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.springbootdemo.mapper.UserServiceMapper">
 
-    <select id="findUsersByCondition" resultType="com.example.springbootdemo.model.Userbase">
-        SELECT * FROM `sys_user`
+    <select id="findUsersByCondition" resultType="com.example.springbootdemo.model.UserWithRole">
+        SELECT u.id,
+               u.name,
+               u.email,
+               u.phone,
+               u.avatar,
+               u.nickName,
+               u.last_login_time AS lastLoginTime,
+               u.last_login_ip AS lastLoginIp,
+               u.create_time AS createTime,
+               GROUP_CONCAT(r.role_code ORDER BY r.id SEPARATOR ',') AS roleCodes,
+               GROUP_CONCAT(r.role_name ORDER BY r.id SEPARATOR ',') AS roleNames
+        FROM `sys_user` u
+        LEFT JOIN `sys_user_role` ur ON u.id = ur.user_id
+        LEFT JOIN `sys_role` r ON ur.role_id = r.id
         <where>
-            <if test="queryDTO.userName != null and queryDTO.userName != ''">AND name LIKE CONCAT('%', #{queryDTO.userName}, '%')</if>
-            <if test="queryDTO.email != null and queryDTO.email != ''">AND email LIKE CONCAT('%', #{queryDTO.email}, '%')</if>
-            <if test="queryDTO.phone != null and queryDTO.phone != ''">AND phone LIKE CONCAT('%', #{queryDTO.phone}, '%')</if>
-            <if test="queryDTO.nickName != null and queryDTO.nickName != ''">AND nickName LIKE CONCAT('%', #{queryDTO.nickName}, '%')</if>
+            <if test="queryDTO.username != null and queryDTO.username != ''">AND u.name LIKE CONCAT('%', #{queryDTO.username}, '%')</if>
+            <if test="queryDTO.email != null and queryDTO.email != ''">AND u.email LIKE CONCAT('%', #{queryDTO.email}, '%')</if>
+            <if test="queryDTO.phone != null and queryDTO.phone != ''">AND u.phone LIKE CONCAT('%', #{queryDTO.phone}, '%')</if>
+            <if test="queryDTO.nickName != null and queryDTO.nickName != ''">AND u.nickName LIKE CONCAT('%', #{queryDTO.nickName}, '%')</if>
         </where>
-        ORDER BY id DESC
-        
+        GROUP BY u.id, u.name, u.email, u.phone, u.avatar, u.nickName, u.last_login_time, u.last_login_ip, u.create_time
+        ORDER BY u.id DESC
         LIMIT #{pageSize} OFFSET #{offset}
     </select>
 
     <select id="countUsersByCondition" resultType="long">
         SELECT COUNT(*) FROM `sys_user`
         <where>
-            <if test="queryDTO.userName != null and queryDTO.userName != ''">AND name LIKE CONCAT('%', #{queryDTO.userName}, '%')</if>
+            <if test="queryDTO.username != null and queryDTO.username != ''">AND name LIKE CONCAT('%', #{queryDTO.username}, '%')</if>
             <if test="queryDTO.email != null and queryDTO.email != ''">AND email LIKE CONCAT('%', #{queryDTO.email}, '%')</if>
             <if test="queryDTO.phone != null and queryDTO.phone != ''">AND phone LIKE CONCAT('%', #{queryDTO.phone}, '%')</if>
             <if test="queryDTO.nickName != null and queryDTO.nickName != ''">AND nickName LIKE CONCAT('%', #{queryDTO.nickName}, '%')</if>
@@ -33,6 +46,16 @@
             <if test="nickName != null">nickName = #{nickName},</if>
         </set>
         WHERE name = #{username}
+    </update>
+
+    <update id="updateUserByAdmin">
+        UPDATE `sys_user`
+        <set>
+            <if test="email != null">email = #{email},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="nickName != null">nickName = #{nickName},</if>
+        </set>
+        WHERE id = #{id}
     </update>
 
 </mapper>

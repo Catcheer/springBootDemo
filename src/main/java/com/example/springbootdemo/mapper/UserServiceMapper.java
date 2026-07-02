@@ -2,6 +2,7 @@ package com.example.springbootdemo.mapper;
 
 import com.example.springbootdemo.dto.UserQueryDTO;
 import com.example.springbootdemo.model.Userbase;
+import com.example.springbootdemo.model.UserWithRole;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
@@ -21,12 +22,9 @@ public interface UserServiceMapper {
     @Select("SELECT * FROM `sys_user` WHERE id = #{id}")
     Userbase findById(@Param("id") Integer id);
 
-    List<Userbase> findUsersByCondition(@Param("queryDTO") UserQueryDTO queryDTO,
-                                        // @Param("email") String email,
-                                        // @Param("phone") String phone,
-                                        // @Param("nickName") String nickName,
-                                        @Param("pageSize") Integer pageSize,
-                                        @Param("offset") Integer offset);
+    List<UserWithRole> findUsersByCondition(@Param("queryDTO") UserQueryDTO queryDTO,
+                                             @Param("pageSize") Integer pageSize,
+                                             @Param("offset") Integer offset);
 
     long countUsersByCondition(@Param("queryDTO") UserQueryDTO queryDTO);
 
@@ -35,6 +33,24 @@ public interface UserServiceMapper {
 
     @Select("SELECT sr.role_code FROM `sys_user_role` sur JOIN `sys_role` sr ON sur.role_id = sr.id JOIN `sys_user` su ON sur.user_id = su.id WHERE su.name = #{username}")
     List<String> findRoleCodesByUsername(@Param("username") String username);
+
+    @Select({"<script>",
+            "SELECT sr.id FROM `sys_role` sr",
+            "WHERE sr.role_code IN",
+            "<foreach item='code' collection='roleCodes' open='(' separator=',' close=')'>",
+            "#{code}",
+            "</foreach>",
+            "</script>"})
+    List<Integer> findRoleIdsByRoleCodes(@Param("roleCodes") List<String> roleCodes);
+
+    @Select("SELECT sr.role_code AS roleCode, sr.role_name AS roleName FROM `sys_user_role` sur JOIN `sys_role` sr ON sur.role_id = sr.id WHERE sur.user_id = #{userId}")
+    List<com.example.springbootdemo.dto.RoleInfoDTO> findRolesByUserId(@Param("userId") Integer userId);
+
+    @Delete("DELETE FROM `sys_user_role` WHERE user_id = #{userId}")
+    int deleteUserRolesByUserId(@Param("userId") Integer userId);
+
+    @Insert("INSERT INTO `sys_user_role` (user_id, role_id) VALUES (#{userId}, #{roleId})")
+    void insertUserRole(@Param("userId") Integer userId, @Param("roleId") Integer roleId);
 
     @Select("SELECT sp.permission_code FROM `sys_user_role` sur JOIN `sys_role_permission` srp ON sur.role_id = srp.role_id JOIN `sys_permission` sp ON srp.permission_id = sp.id WHERE sur.user_id = #{userId}")
     List<String> findPermissionCodesByUserId(@Param("userId") Integer userId);
@@ -59,7 +75,6 @@ public interface UserServiceMapper {
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     void insertUser(Userbase user);
 
-    @Update("UPDATE `sys_user` SET email = #{email}, phone = #{phone}, nickName = #{nickName} WHERE id = #{id}")
     int updateUserByAdmin(@Param("id") Integer id,
                           @Param("email") String email,
                           @Param("phone") String phone,

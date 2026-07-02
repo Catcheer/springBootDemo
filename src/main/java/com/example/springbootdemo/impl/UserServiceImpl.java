@@ -3,10 +3,12 @@ package com.example.springbootdemo.impl;
 import com.example.springbootdemo.common.PageResult;
 import com.example.springbootdemo.dto.LoginResponseDTO;
 import com.example.springbootdemo.dto.LoginUserDTO;
+import com.example.springbootdemo.dto.RoleInfoDTO;
 import com.example.springbootdemo.dto.UpdateUserDTO;
 import com.example.springbootdemo.dto.UserCreateDTO;
 import com.example.springbootdemo.dto.UserQueryDTO;
 import com.example.springbootdemo.mapper.UserServiceMapper;
+import com.example.springbootdemo.model.UserWithRole;
 import com.example.springbootdemo.model.Userbase;
 import com.example.springbootdemo.service.UserService;
 import com.example.springbootdemo.utils.JwtUtil;
@@ -21,7 +23,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -154,7 +159,7 @@ public class UserServiceImpl implements UserService {
        
 
         int offset = (page - 1) * pageSize;
-        List<Userbase> users = userServiceMapper.findUsersByCondition(queryDTO, pageSize, offset);
+        List<UserWithRole> users = userServiceMapper.findUsersByCondition(queryDTO, pageSize, offset);
         long total = userServiceMapper.countUsersByCondition(queryDTO);
         List<LoginUserDTO> list = users.stream()
                 .map(this::mapToLoginUserDTO)
@@ -193,6 +198,9 @@ public class UserServiceImpl implements UserService {
         user.setNickName(createUserDTO.getNickName());
 
         userServiceMapper.insertUser(user);
+        if (createUserDTO.getRoles() != null) {
+            saveUserRoles(user.getId(), createUserDTO.getRoles());
+        }
         return getUserById(user.getId());
     }
 
@@ -210,14 +218,20 @@ public class UserServiceImpl implements UserService {
         String email = updateUserDTO.getEmail();
         String phone = updateUserDTO.getPhone();
         String nickName = updateUserDTO.getNickName();
+        List<String> roles = updateUserDTO.getRoles();
 
-        if (email == null && phone == null && nickName == null) {
-            return mapToLoginUserDTO(existingUser);
+        boolean hasUserInfoUpdate = email != null || phone != null || nickName != null;
+        if (!hasUserInfoUpdate && roles == null) {
+            return getUserById(id);
         }
 
-        userServiceMapper.updateUserByAdmin(id, email, phone, nickName);
-        Userbase updatedUser = userServiceMapper.findById(id);
-        return mapToLoginUserDTO(updatedUser);
+        if (hasUserInfoUpdate) {
+            userServiceMapper.updateUserByAdmin(id, email, phone, nickName);
+        }
+        if (roles != null) {
+            saveUserRoles(id, roles);
+        }
+        return getUserById(id);
     }
 
     @Override
@@ -225,7 +239,19 @@ public class UserServiceImpl implements UserService {
         if (id == null) {
             return false;
         }
+        userServiceMapper.deleteUserRolesByUserId(id);
         return userServiceMapper.deleteUser(id) > 0;
+    }
+
+    private void saveUserRoles(Integer userId, List<String> roleCodes) {
+        userServiceMapper.deleteUserRolesByUserId(userId);
+        if (roleCodes == null || roleCodes.isEmpty()) {
+            return;
+        }
+        List<Integer> roleIds = userServiceMapper.findRoleIdsByRoleCodes(roleCodes);
+        for (Integer roleId : roleIds) {
+            userServiceMapper.insertUserRole(userId, roleId);
+        }
     }
 
     private LoginUserDTO mapToLoginUserDTO(Userbase user) {
@@ -239,6 +265,32 @@ public class UserServiceImpl implements UserService {
         loginUser.setLastLoginTime(user.getLastLoginTime());
         loginUser.setLastLoginIp(user.getLastLoginIp());
         loginUser.setCreateTime(user.getCreateTime());
+        List<RoleInfoDTO> roles = userServiceMapper.findRolesByUserId(user.getId());
+        loginUser.setRoles(roles == null ? new java.util.ArrayList<>() : roles);
+        return loginUser;
+    }
+
+    private LoginUserDTO mapToLoginUserDTO(UserWithRole row) {
+        LoginUserDTO loginUser = new LoginUserDTO();
+        loginUser.setId(row.getId());
+        loginUser.setUsername(row.getName());
+        loginUser.setNickname(row.getNickName());
+        loginUser.setAvatar(row.getAvatar());
+        loginUser.setEmail(row.getEmail());
+        loginUser.setPhone(row.getPhone());
+        loginUser.setLastLoginTime(row.getLastLoginTime());
+        loginUser.setLastLoginIp(row.getLastLoginIp());
+        loginUser.setCreateTime(row.getCreateTime());
+        List<RoleInfoDTO> roles = new java.util.ArrayList<>();
+        if (row.getRoleCodes() != null && row.getRoleNames() != null) {
+            String[] codes = row.getRoleCodes().split(",");
+            String[] names = row.getRoleNames().split(",");
+            int len = Math.min(codes.length, names.length);
+            for (int i = 0; i < len; i++) {
+                roles.add(new RoleInfoDTO(codes[i], names[i]));
+            }
+        }
+        loginUser.setRoles(roles);
         return loginUser;
     }
 }

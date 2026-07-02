@@ -67,6 +67,7 @@ class UserServiceImplTest {
         createdUser.setNickName("new-user");
         createdUser.setCreateTime("2024-01-01 10:00:00");
         when(userServiceMapper.findById(100)).thenReturn(createdUser);
+        when(userServiceMapper.findRolesByUserId(100)).thenReturn(List.of());
 
         org.mockito.Mockito.doAnswer(invocation -> {
             Userbase user = invocation.getArgument(0);

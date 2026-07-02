@@ -1,21 +1,20 @@
-package com.example.springbootdemo.dto;
+package com.example.springbootdemo.model;
 
 import lombok.Data;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
-public class LoginUserDTO {
+public class UserWithRole {
     private Integer id;
-    private String username;
-    private String nickname;
-    private String avatar;
+    private String name;
     private String email;
-    //手机号
     private String phone;
+    private String avatar;
+    private String nickName;
     private LocalDateTime lastLoginTime;
     private String lastLoginIp;
     private String createTime;
-    private List<RoleInfoDTO> roles;
+    private String roleCodes;
+    private String roleNames;
 }
