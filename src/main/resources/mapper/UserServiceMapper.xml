@@ -11,6 +11,7 @@
             <if test="queryDTO.nickName != null and queryDTO.nickName != ''">AND nickName LIKE CONCAT('%', #{queryDTO.nickName}, '%')</if>
         </where>
         ORDER BY id DESC
+        
         LIMIT #{pageSize} OFFSET #{offset}
     </select>
 

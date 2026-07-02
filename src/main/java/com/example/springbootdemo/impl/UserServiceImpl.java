@@ -151,10 +151,7 @@ public class UserServiceImpl implements UserService {
         int page = queryDTO.getPage() == null || queryDTO.getPage() < 1 ? 1 : queryDTO.getPage();
         int pageSize = queryDTO.getPageSize() == null || queryDTO.getPageSize() < 1 ? 10 : queryDTO.getPageSize();
 
-        // String userName = queryDTO.getUserName();
-        // String email = queryDTO.getEmail();
-        // String phone = queryDTO.getPhone();
-        // String nickName = queryDTO.getNickName();
+       
 
         int offset = (page - 1) * pageSize;
         List<Userbase> users = userServiceMapper.findUsersByCondition(queryDTO, pageSize, offset);
