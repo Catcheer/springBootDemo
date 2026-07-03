@@ -1,6 +1,6 @@
 # 🎓 Student Management System
 
-> 一个基于 **Spring Boot 3 + React 18** 的前后端分离学生管理系统。
+> 一个基于 **Spring Boot 3 + React 18** 的前后端分离管理系统。
 
 本项目主要用于学习现代 Web 全栈开发，采用 **RBAC 权限模型** 实现用户、角色、权限管理，并结合 **Spring Security + JWT** 完成认证授权，涵盖学生管理、Excel 导入导出、用户中心等企业项目常见功能。
 
