@@ -24,19 +24,16 @@ public class UploadController {
     @PostMapping("/uploadExcel")
     public Result<Integer> uploadFile(@RequestParam("file") MultipartFile file) {
         try {
-            List<Student> list = new ExcelToJdbcService().convertExcelToJson(file);
+            List<Student> list = new ExcelToJdbcService().convertExcelToStudents(file);
 
-            // 循环 单条插入
             for (Student student : list) {
-
                 studentService.addStudent(student);
             }
 
             return Result.success(list.size());
         } catch (Exception e) {
             e.printStackTrace();
-            // return "Error: " + e.getMessage();
-            return Result.success();
+            return Result.error("Excel 上传失败: " + e.getMessage());
         }
     }
 }

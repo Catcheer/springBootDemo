@@ -6,24 +6,24 @@ import lombok.Data;
 @Data
 public class StudentExcelVO {
 
-    @ExcelProperty("学号")
+    @ExcelProperty(value = "学号", index = 0)
     private String studentNo;
 
-    @ExcelProperty("姓名")
+    @ExcelProperty(value = "姓名", index = 1)
     private String name;
 
-    @ExcelProperty("性别")
+    @ExcelProperty(value = "性别", index = 2)
     private String gender;
 
-    @ExcelProperty("班级")
+    @ExcelProperty(value = "班级", index = 3)
     private String className;
 
-    @ExcelProperty("生日")
+    @ExcelProperty(value = "生日", index = 4)
     private String birthday;
 
-    @ExcelProperty("手机号")
+    @ExcelProperty(value = "手机号", index = 5)
     private String phone;
 
-    @ExcelProperty("班级ID")
+    @ExcelProperty(value = "班级ID", index = 6)
     private Integer classId;
 }
