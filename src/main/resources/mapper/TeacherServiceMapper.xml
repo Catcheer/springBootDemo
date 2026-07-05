@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.springbootdemo.mapper.TeacherServiceMapper">
+
+    <sql id="BaseWhere">
+        WHERE 1=1
+        <if test="query.name != null and query.name != ''">
+            AND name LIKE CONCAT('%', #{query.name}, '%')
+        </if>
+        <if test="query.teacherNo != null and query.teacherNo != ''">
+            AND teacher_no LIKE CONCAT('%', #{query.teacherNo}, '%')
+        </if>
+        <if test="query.phone != null and query.phone != ''">
+            AND phone LIKE CONCAT('%', #{query.phone}, '%')
+        </if>
+        <if test="query.status != null">
+            AND status = #{query.status}
+        </if>
+    </sql>
+
+    <select id="getTeachers" resultType="com.example.springbootdemo.model.Teacher">
+        SELECT *
+        FROM teacher
+        <include refid="BaseWhere"/>
+        ORDER BY id DESC
+        LIMIT #{offset}, #{size}
+    </select>
+
+    <select id="count" resultType="long">
+        SELECT COUNT(*)
+        FROM teacher
+        <include refid="BaseWhere"/>
+    </select>
+
+    <insert id="addTeacher" parameterType="com.example.springbootdemo.model.Teacher"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO teacher
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="teacherNo != null and teacherNo != ''">teacher_no,</if>
+            <if test="name != null and name != ''">name,</if>
+            <if test="gender != null">gender,</if>
+            <if test="phone != null and phone != ''">phone,</if>
+            <if test="email != null and email != ''">email,</if>
+            <if test="status != null">status,</if>
+            <if test="description != null and description != ''">description,</if>
+        </trim>
+        <trim prefix="VALUES (" suffix=")" suffixOverrides=",">
+            <if test="teacherNo != null and teacherNo != ''">#{teacherNo},</if>
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="gender != null">#{gender},</if>
+            <if test="phone != null and phone != ''">#{phone},</if>
+            <if test="email != null and email != ''">#{email},</if>
+            <if test="status != null">#{status},</if>
+            <if test="description != null and description != ''">#{description},</if>
+        </trim>
+    </insert>
+
+    <update id="updateTeacher" parameterType="com.example.springbootdemo.model.Teacher">
+        UPDATE teacher
+        <set>
+            <if test="teacherNo != null and teacherNo != ''">teacher_no = #{teacherNo},</if>
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="gender != null">gender = #{gender},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="email != null">email = #{email},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="description != null">description = #{description},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+</mapper>

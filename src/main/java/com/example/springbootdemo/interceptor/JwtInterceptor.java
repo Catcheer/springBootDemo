@@ -84,6 +84,32 @@ public class JwtInterceptor implements HandlerInterceptor {
             return permissions.contains("student:delete");
         }
 
+        if ("/classes".equals(normalizedPath)) {
+            return permissions.contains("class:list");
+        }
+        if ("/addClass".equals(normalizedPath)) {
+            return permissions.contains("class:add");
+        }
+        if ("/updateClass".equals(normalizedPath)) {
+            return permissions.contains("class:update");
+        }
+        if (normalizedPath.startsWith("/delClass")) {
+            return permissions.contains("class:delete");
+        }
+
+        if ("/teachers".equals(normalizedPath)) {
+            return permissions.contains("teacher:list");
+        }
+        if ("/addTeacher".equals(normalizedPath)) {
+            return permissions.contains("teacher:add");
+        }
+        if ("/updateTeacher".equals(normalizedPath)) {
+            return permissions.contains("teacher:update");
+        }
+        if (normalizedPath.startsWith("/delTeacher")) {
+            return permissions.contains("teacher:delete");
+        }
+
         return true;
     }
 

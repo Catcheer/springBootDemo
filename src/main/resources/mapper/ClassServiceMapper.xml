@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.springbootdemo.mapper.ClassServiceMapper">
+
+    <sql id="ClassJoin">
+        FROM `class` c
+        LEFT JOIN teacher ht ON c.head_teacher_id = ht.id
+        LEFT JOIN teacher ct ON c.chinese_teacher_id = ct.id
+        LEFT JOIN teacher mt ON c.math_teacher_id = mt.id
+        LEFT JOIN teacher et ON c.english_teacher_id = et.id
+    </sql>
+
+    <sql id="BaseWhere">
+        WHERE 1=1
+        <if test="query.className != null and query.className != ''">
+            AND c.class_name LIKE CONCAT('%', #{query.className}, '%')
+        </if>
+        <if test="query.headTeacherName != null and query.headTeacherName != ''">
+            AND ht.name LIKE CONCAT('%', #{query.headTeacherName}, '%')
+        </if>
+        <if test="query.status != null">
+            AND c.status = #{query.status}
+        </if>
+    </sql>
+
+    <select id="getClassList" resultType="com.example.springbootdemo.model.ClassVo">
+        SELECT id, class_name AS className
+        FROM `class`
+        WHERE status = 1
+        ORDER BY id
+    </select>
+
+    <select id="getClasses" resultType="com.example.springbootdemo.model.ClassInfo">
+        SELECT
+            c.*,
+            ht.name AS headTeacherName,
+            ct.name AS chineseTeacherName,
+            mt.name AS mathTeacherName,
+            et.name AS englishTeacherName
+        <include refid="ClassJoin"/>
+        <include refid="BaseWhere"/>
+        ORDER BY c.id DESC
+        LIMIT #{offset}, #{size}
+    </select>
+
+    <select id="count" resultType="long">
+        SELECT COUNT(*)
+        <include refid="ClassJoin"/>
+        <include refid="BaseWhere"/>
+    </select>
+
+    <insert id="addClass" parameterType="com.example.springbootdemo.model.ClassInfo"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `class`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="className != null and className != ''">class_name,</if>
+            <if test="headTeacherId != null">head_teacher_id,</if>
+            <if test="chineseTeacherId != null">chinese_teacher_id,</if>
+            <if test="mathTeacherId != null">math_teacher_id,</if>
+            <if test="englishTeacherId != null">english_teacher_id,</if>
+            <if test="status != null">status,</if>
+            <if test="description != null and description != ''">description,</if>
+        </trim>
+        <trim prefix="VALUES (" suffix=")" suffixOverrides=",">
+            <if test="className != null and className != ''">#{className},</if>
+            <if test="headTeacherId != null">#{headTeacherId},</if>
+            <if test="chineseTeacherId != null">#{chineseTeacherId},</if>
+            <if test="mathTeacherId != null">#{mathTeacherId},</if>
+            <if test="englishTeacherId != null">#{englishTeacherId},</if>
+            <if test="status != null">#{status},</if>
+            <if test="description != null and description != ''">#{description},</if>
+        </trim>
+    </insert>
+
+    <update id="updateClass" parameterType="com.example.springbootdemo.model.ClassInfo">
+        UPDATE `class`
+        <set>
+            <if test="className != null and className != ''">class_name = #{className},</if>
+            <if test="headTeacherId != null">head_teacher_id = #{headTeacherId},</if>
+            <if test="chineseTeacherId != null">chinese_teacher_id = #{chineseTeacherId},</if>
+            <if test="mathTeacherId != null">math_teacher_id = #{mathTeacherId},</if>
+            <if test="englishTeacherId != null">english_teacher_id = #{englishTeacherId},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="description != null">description = #{description},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+</mapper>

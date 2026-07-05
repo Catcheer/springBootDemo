@@ -35,7 +35,7 @@ public class Student {
         private String name;
 
         @ExcelProperty("性别")
-        private String gender;
+        private Integer gender; // 1: 男, 2: 女
 
         @ExcelProperty("班级")
         private String className;

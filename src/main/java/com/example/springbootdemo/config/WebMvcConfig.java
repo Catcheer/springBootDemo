@@ -24,7 +24,11 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(jwtInterceptor)
                 .addPathPatterns("/**")
-                .excludePathPatterns("/user/login", "/user/logout", "/user/refresh", "/uploads/**");
+                .excludePathPatterns("/user/login", 
+                "/user/logout",
+                 "/user/refresh",
+                 "/swagger-ui/**",
+                  "/uploads/**");
     }
 
     @Value("${file.upload-path}")
