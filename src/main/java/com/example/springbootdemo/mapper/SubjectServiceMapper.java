@@ -16,6 +16,17 @@ public interface SubjectServiceMapper {
     List<SubjectVo> selectAllSubjects();
 
     @Select("""
+            <script>
+            SELECT * FROM subject
+            WHERE id IN
+            <foreach collection="subjectIds" item="id" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+            </script>
+            """)
+    List<SubjectVo> selectSubjectsByIds(@Param("subjectIds") List<Integer> subjectIds);
+
+    @Select("""
             SELECT s.*
             FROM subject s
             INNER JOIN teacher_subject ts ON s.id = ts.subject_id

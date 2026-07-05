@@ -19,6 +19,12 @@
         <if test="query.status != null">
             AND t.status = #{query.status}
         </if>
+        <if test="query.subjectId != null">
+            AND EXISTS (
+                SELECT 1 FROM teacher_subject ts_filter
+                WHERE ts_filter.teacher_id = t.id AND ts_filter.subject_id = #{query.subjectId}
+            )
+        </if>
     </sql>
 
     <select id="getTeachers" resultType="com.example.springbootdemo.model.Teacher">
@@ -83,6 +89,7 @@
             <if test="email != null">email = #{email},</if>
             <if test="status != null">status = #{status},</if>
             <if test="description != null">description = #{description},</if>
+            update_time = NOW()
         </set>
         WHERE id = #{id}
     </update>

@@ -8,6 +8,11 @@ import com.example.springbootdemo.common.Result;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(BusinessException.class)
+    public Result<Void> handleBusinessException(BusinessException e) {
+        return Result.error(e.getCode(), e.getMessage());
+    }
+
     /**
      * 捕获所有异常
      */

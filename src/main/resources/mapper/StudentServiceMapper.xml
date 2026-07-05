@@ -72,6 +72,7 @@
             <if test="birthday != null">birthday = #{birthday},</if>
             <if test="phone != null and phone != ''">phone = #{phone},</if>
             <if test="classId != null">class_id = #{classId},</if>
+            update_time = NOW()
         </set>
         WHERE id = #{id}
     </update>

@@ -89,4 +89,19 @@
         WHERE id = #{id}
     </update>
 
+    <select id="findTeacherClassAssignments"
+            resultType="com.example.springbootdemo.model.TeacherClassAssignmentVo">
+        SELECT c.id AS classId, c.class_name AS className, 'chinese' AS roleType, '语文老师' AS roleName
+        FROM `class` c
+        WHERE c.chinese_teacher_id = #{teacherId}
+        UNION ALL
+        SELECT c.id, c.class_name, 'math', '数学老师'
+        FROM `class` c
+        WHERE c.math_teacher_id = #{teacherId}
+        UNION ALL
+        SELECT c.id, c.class_name, 'english', '英语老师'
+        FROM `class` c
+        WHERE c.english_teacher_id = #{teacherId}
+    </select>
+
 </mapper>
