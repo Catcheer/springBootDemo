@@ -5,11 +5,19 @@ import com.example.springbootdemo.model.Teacher;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
 @Mapper
 public interface TeacherServiceMapper {
+
+    @Select("""
+            SELECT id, teacher_no, name
+            FROM teacher
+            ORDER BY id
+            """)
+    List<Teacher> getAllTeachers();
 
     List<Teacher> getTeachers(
             @Param("query") TeacherQuery query,

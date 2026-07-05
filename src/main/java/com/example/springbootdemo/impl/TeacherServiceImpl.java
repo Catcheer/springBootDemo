@@ -3,7 +3,10 @@ package com.example.springbootdemo.impl;
 import com.example.springbootdemo.dto.TeacherQuery;
 import com.example.springbootdemo.mapper.SubjectServiceMapper;
 import com.example.springbootdemo.mapper.TeacherServiceMapper;
+import com.example.springbootdemo.model.SubjectVo;
 import com.example.springbootdemo.model.Teacher;
+import com.example.springbootdemo.model.TeacherOptionVo;
+import com.example.springbootdemo.model.TeacherSubjectVo;
 import com.example.springbootdemo.service.TeacherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +23,28 @@ public class TeacherServiceImpl implements TeacherService {
 
     @Autowired
     SubjectServiceMapper subjectServiceMapper;
+
+    @Override
+    public List<TeacherOptionVo> getAllTeachersWithSubjects() {
+        List<Teacher> teachers = teacherServiceMapper.getAllTeachers();
+        return teachers.stream().map(teacher -> {
+            TeacherOptionVo vo = new TeacherOptionVo();
+            vo.setId(teacher.getId());
+            vo.setTeacherNo(teacher.getTeacherNo());
+            vo.setName(teacher.getName());
+            List<SubjectVo> subjectList = subjectServiceMapper.selectSubjectsByTeacherId(teacher.getId());
+            vo.setSubject(subjectList.stream().map(this::toTeacherSubjectVo).toList());
+            return vo;
+        }).toList();
+    }
+
+    private TeacherSubjectVo toTeacherSubjectVo(SubjectVo subject) {
+        TeacherSubjectVo item = new TeacherSubjectVo();
+        item.setSubjectId(subject.getId());
+        item.setSubjectCode(subject.getSubjectCode());
+        item.setSubjectName(subject.getSubjectName());
+        return item;
+    }
 
     @Override
     public List<Teacher> getTeachers(TeacherQuery query, int page, int size) {

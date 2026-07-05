@@ -12,4 +12,5 @@ public class TeacherQuery extends PageQuery {
     private String teacherNo;
     private String phone;
     private Integer status;
+    private Integer subjectId;
 }

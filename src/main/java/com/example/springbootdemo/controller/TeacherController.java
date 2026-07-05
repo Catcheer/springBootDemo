@@ -4,8 +4,10 @@ import com.example.springbootdemo.common.PageResult;
 import com.example.springbootdemo.common.Result;
 import com.example.springbootdemo.dto.TeacherQuery;
 import com.example.springbootdemo.model.Teacher;
+import com.example.springbootdemo.model.TeacherOptionVo;
 import com.example.springbootdemo.service.TeacherService;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,6 +22,11 @@ public class TeacherController {
 
     public TeacherController(TeacherService teacherService) {
         this.teacherService = teacherService;
+    }
+
+    @GetMapping("/teacher/get")
+    public Result<List<TeacherOptionVo>> getAllTeachers() {
+        return Result.success(teacherService.getAllTeachersWithSubjects());
     }
 
     @PostMapping("/teachers")
