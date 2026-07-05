@@ -8,30 +8,45 @@
     <sql id="BaseWhere">
         WHERE 1=1
         <if test="query.name != null and query.name != ''">
-            AND name LIKE CONCAT('%', #{query.name}, '%')
+            AND t.name LIKE CONCAT('%', #{query.name}, '%')
         </if>
         <if test="query.teacherNo != null and query.teacherNo != ''">
-            AND teacher_no LIKE CONCAT('%', #{query.teacherNo}, '%')
+            AND t.teacher_no LIKE CONCAT('%', #{query.teacherNo}, '%')
         </if>
         <if test="query.phone != null and query.phone != ''">
-            AND phone LIKE CONCAT('%', #{query.phone}, '%')
+            AND t.phone LIKE CONCAT('%', #{query.phone}, '%')
         </if>
         <if test="query.status != null">
-            AND status = #{query.status}
+            AND t.status = #{query.status}
         </if>
     </sql>
 
     <select id="getTeachers" resultType="com.example.springbootdemo.model.Teacher">
-        SELECT *
-        FROM teacher
+        SELECT
+            t.id,
+            t.teacher_no,
+            t.name,
+            t.gender,
+            t.phone,
+            t.email,
+            t.status,
+            t.description,
+            t.create_time,
+            t.update_time,
+            GROUP_CONCAT(s.id ORDER BY s.id) AS subject_ids_raw,
+            GROUP_CONCAT(s.subject_name ORDER BY s.id SEPARATOR ',') AS subjects_name
+        FROM teacher t
+        LEFT JOIN teacher_subject ts ON t.id = ts.teacher_id
+        LEFT JOIN subject s ON s.id = ts.subject_id
         <include refid="BaseWhere"/>
-        ORDER BY id DESC
+        GROUP BY t.id, t.teacher_no, t.name, t.gender, t.phone, t.email, t.status, t.description, t.create_time, t.update_time
+        ORDER BY t.id DESC
         LIMIT #{offset}, #{size}
     </select>
 
     <select id="count" resultType="long">
         SELECT COUNT(*)
-        FROM teacher
+        FROM teacher t
         <include refid="BaseWhere"/>
     </select>
 
