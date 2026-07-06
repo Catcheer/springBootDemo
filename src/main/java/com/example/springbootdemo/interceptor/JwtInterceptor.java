@@ -109,6 +109,10 @@ public class JwtInterceptor implements HandlerInterceptor {
         if (normalizedPath.startsWith("/delTeacher")) {
             return permissions.contains("teacher:delete");
         }
+        // if (normalizedPath.startsWith("/operationLog")) {
+        //     return permissions.contains("operationLog:list");
+        // }
+
 
         return true;
     }
