@@ -57,3 +57,80 @@ EAM 平台底层
       ├── 班级/教师/学生 多维关联实体域
       ├── 跨域数据看板 (Dashboard 聚合统计)
       └── 流式 Excel 批量数据导入/导出
+
+
+
+---
+
+# 🛠 技术栈
+
+## 后端
+
+| 技术 | 说明 |
+|------|------|
+| Spring Boot 3 | Web 开发框架 |
+| Spring Security | 登录认证、权限控制 |
+| JWT | Token 无状态认证 |
+| MyBatis | ORM 持久层 |
+| MySQL | 数据库 |
+| Gradle | 项目构建工具 |
+| Docker | 容器化部署 |
+
+---
+
+## 前端
+
+| 技术 | 说明 |
+|------|------|
+| React 18 | 前端框架 |
+| TypeScript | 类型支持 |
+| React Router | 路由管理 |
+| Redux Toolkit | 状态管理 |
+| Ant Design | UI 组件库 |
+| Axios | HTTP 请求 |
+| ECharts | Dashboard 数据可视化 |
+| Tailwind CSS | 页面样式 |
+| Vite | 构建工具 |
+
+---
+
+---
+
+# 👤 演示账号权限
+
+| 用户 | 角色 | 学生查询 | 学生新增 | 学生修改 | 学生删除 | Excel导入 | Excel导出 | 用户管理 | 角色管理 | 权限管理 |
+|------|------|:------:|:------:|:------:|:------:|:------:|:------:|:------:|:------:|:------:|
+| admin | Admin | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 张世伟 | 班主任 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | 👀仅查看 | 👀仅查看 | 👀仅查看 |
+| 刘永进 | 普通教师 | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 后勤 | 后勤 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+
+> 👀 表示拥有查看权限，但无新增、修改、删除权限。
+
+---
+
+# 🌐 在线体验
+
+**演示地址**
+
+http://47.96.121.113:9006/app-react/login
+
+---
+
+# 📂 项目地址
+
+## 前端（React）
+
+https://github.com/Catcheer/micro-frontend-project/tree/feat_login/react-project
+
+## 后端（Spring Boot）
+
+https://github.com/Catcheer/springBootDemo
+
+---
+
+# ⭐ Star 支持
+
+如果这个项目对你有所帮助，欢迎 **Star ⭐** 支持一下。
+
+如果你有更好的建议，欢迎提交 **Issue** 或 **Pull Request**，一起交流学习，共同完善这个项目！
