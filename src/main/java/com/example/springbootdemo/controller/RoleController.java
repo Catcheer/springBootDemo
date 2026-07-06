@@ -1,5 +1,6 @@
 package com.example.springbootdemo.controller;
 
+import com.example.springbootdemo.annotation.OperLog;
 import com.example.springbootdemo.common.PageResult;
 import com.example.springbootdemo.common.Result;
 import com.example.springbootdemo.dto.RoleCreateDTO;
@@ -40,6 +41,7 @@ public class RoleController {
         return Result.success(role);
     }
 
+    @OperLog(module = "角色管理", operation = "新增")
     @PostMapping("/add")
     public Result<Role> createRole(@RequestBody RoleCreateDTO createDTO) {
         Role role = roleService.createRole(createDTO);
@@ -49,6 +51,7 @@ public class RoleController {
         return Result.success(role);
     }
 
+    @OperLog(module = "角色管理", operation = "修改")
     @PutMapping("/update/{id}")
     public Result<Role> updateRole(@PathVariable Integer id, @RequestBody RoleUpdateDTO updateDTO) {
         Role role = roleService.updateRole(id, updateDTO);
@@ -58,6 +61,7 @@ public class RoleController {
         return Result.success(role);
     }
 
+    @OperLog(module = "角色管理", operation = "删除")
     @DeleteMapping("/delete/{id}")
     public Result<String> deleteRole(@PathVariable Integer id) {
         boolean deleted = roleService.deleteRole(id);

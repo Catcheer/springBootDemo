@@ -1,5 +1,6 @@
 package com.example.springbootdemo.controller;
 
+import com.example.springbootdemo.annotation.OperLog;
 import com.example.springbootdemo.common.PageResult;
 import com.example.springbootdemo.common.Result;
 import com.example.springbootdemo.dto.LoginResponseDTO;
@@ -153,6 +154,7 @@ public class UserController {
         return Result.success(user);
     }
 
+    @OperLog(module = "用户管理", operation = "新增")
     @PostMapping("/add")
     public Result<LoginUserDTO> createUser(@RequestBody UserCreateDTO createUserDTO) {
         LoginUserDTO createdUser = userService.createUser(createUserDTO);
@@ -162,6 +164,7 @@ public class UserController {
         return Result.success(createdUser);
     }
 
+    @OperLog(module = "用户管理", operation = "修改")
     @PutMapping("/update/{id}")
     public Result<LoginUserDTO> updateUserById(@PathVariable Integer id, @RequestBody UpdateUserDTO updateUserDTO) {
         LoginUserDTO updatedUser = userService.updateUserById(id, updateUserDTO);
@@ -171,6 +174,7 @@ public class UserController {
         return Result.success(updatedUser);
     }
 
+    @OperLog(module = "用户管理", operation = "删除")
     @DeleteMapping("/delete/{id}")
     public Result<String> deleteUser(@PathVariable Integer id) {
         boolean deleted = userService.deleteUser(id);

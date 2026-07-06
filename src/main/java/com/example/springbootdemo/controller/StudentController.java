@@ -1,5 +1,6 @@
 package com.example.springbootdemo.controller;
 
+import com.example.springbootdemo.annotation.OperLog;
 import com.example.springbootdemo.common.PageResult;
 import com.example.springbootdemo.common.Result;
 import com.example.springbootdemo.dto.StudentQuery;
@@ -32,6 +33,7 @@ public class StudentController {
         return Result.success(pageData);
     }
 
+    @OperLog(module = "学生管理", operation = "新增")
     @PostMapping("/addStudent")
     public Result<Integer> addStudent(@RequestBody Student s) {
         studentService.addStudent(s);
@@ -39,12 +41,14 @@ public class StudentController {
         return Result.success(id);
     };
 
+    @OperLog(module = "学生管理", operation = "修改")
     @PostMapping("/updateStudent")
     public Result<Integer> updateStudent(@RequestBody Student s) {
         studentService.updateStudent(s);
         return Result.success(s.getId());
     };
 
+    @OperLog(module = "学生管理", operation = "删除")
     @DeleteMapping("/delStudent/{id}")
     public Result<Integer> delStudent(@PathVariable("id") int id) {
         studentService.delStudent(id);

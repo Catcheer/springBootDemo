@@ -1,5 +1,6 @@
 package com.example.springbootdemo.controller;
 
+import com.example.springbootdemo.annotation.OperLog;
 import com.example.springbootdemo.common.PageResult;
 import com.example.springbootdemo.common.Result;
 import com.example.springbootdemo.dto.ClassQuery;
@@ -40,18 +41,21 @@ public class ClassController {
         return Result.success(pageData);
     }
 
+    @OperLog(module = "班级管理", operation = "新增")
     @PostMapping("/addClass")
     public Result<Integer> addClass(@RequestBody ClassInfo classInfo) {
         classService.addClass(classInfo);
         return Result.success(classInfo.getId());
     }
 
+    @OperLog(module = "班级管理", operation = "修改")
     @PostMapping("/updateClass")
     public Result<Integer> updateClass(@RequestBody ClassInfo classInfo) {
         classService.updateClass(classInfo);
         return Result.success(classInfo.getId());
     }
 
+    @OperLog(module = "班级管理", operation = "删除")
     @DeleteMapping("/delClass/{id}")
     public Result<Integer> delClass(@PathVariable("id") int id) {
         classService.delClass(id);

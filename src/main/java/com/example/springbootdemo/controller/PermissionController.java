@@ -1,5 +1,6 @@
 package com.example.springbootdemo.controller;
 
+import com.example.springbootdemo.annotation.OperLog;
 import com.example.springbootdemo.common.PageResult;
 import com.example.springbootdemo.common.Result;
 import com.example.springbootdemo.dto.PermissionCreateDTO;
@@ -40,6 +41,7 @@ public class PermissionController {
         return Result.success(permission);
     }
 
+    @OperLog(module = "权限管理", operation = "新增")
     @PostMapping("/add")
     public Result<Permission> createPermission(@RequestBody PermissionCreateDTO createDTO) {
         Permission permission = permissionService.createPermission(createDTO);
@@ -49,6 +51,7 @@ public class PermissionController {
         return Result.success(permission);
     }
 
+    @OperLog(module = "权限管理", operation = "修改")
     @PutMapping("/update/{id}")
     public Result<Permission> updatePermission(@PathVariable Integer id, @RequestBody PermissionUpdateDTO updateDTO) {
         Permission permission = permissionService.updatePermission(id, updateDTO);
@@ -58,6 +61,7 @@ public class PermissionController {
         return Result.success(permission);
     }
 
+    @OperLog(module = "权限管理", operation = "删除")
     @DeleteMapping("/delete/{id}")
     public Result<String> deletePermission(@PathVariable Integer id) {
         boolean deleted = permissionService.deletePermission(id);
