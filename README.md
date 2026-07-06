@@ -1,64 +1,138 @@
 # 🚀 Enterprise Admin Matrix (EAM)
 
-> **基于 Spring Boot 3 + React 18 + TypeScript 的企业级通用中后台权限管理与低代码效能平台。**
+> 基于 **Spring Boot 3 + React 18 + TypeScript** 的企业级通用后台管理系统，集成 **RBAC 权限管理、JWT 身份认证、动态表单、操作日志、Dashboard 数据统计、Excel 导入导出** 等中后台常见能力。
 
-[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.x-green.svg)](https://spring.io/projects/spring-boot)
-[![React](https://img.shields.io/badge/React-18.x-blue.svg)](https://react.dev/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue.svg)](https://www.typescriptlang.org/)
-[![License](https://img.shields.io/badge/License-MIT-purple.svg)](LICENSE)
-
-EAM 是一个前后端分离的、全栈一体化的**企业级基础演进脚手架**。项目核心聚焦于中后台系统的三大底层痛点：**企业级精细化权限管控（RBAC）、研发效能提升（低代码表单引擎）、以及全链路数据合规与审计**。
-
-本项目沉淀了现代 Web 全栈开发的标准工程实践，可直接作为企业级 SaaS 平台、内部运营系统、数据治理平台的底层底层框架。
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.x-green.svg)
+![React](https://img.shields.io/badge/React-18-blue.svg)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue.svg)
+![License](https://img.shields.io/badge/License-MIT-purple.svg)
 
 ---
 
-## 💡 核心工程亮点
+# 📖 项目简介
 
-* 🔐 **高安全级无状态认证**：基于 Spring Security + JWT 打造无状态分布式认证架构。针对高危操作设计 **AOP 统一审计日志切面**，通过异步线程池（Thread Pool）进行 I/O 隔离，确保核心操作 100% 可追溯且不阻塞主业务。
-* ⚙️ **Schema 驱动表单引擎**：针对传统中后台表单代码冗余度高（>40%）的痛点，自主设计并实现了 **Schema 驱动的动态表单渲染引擎**。将 UI 视图、业务校验规则（Validation Rules）与后端元数据高度抽象解耦，使标准业务表单的研发效率提升 **60% 以上**。
-* 🛡️ **多维度真动态权限隔离**：采用标准 **RBAC 权限模型**，在 React 18 + TS 上层构建路由级与按钮级（Button-level）的真动态权限控制。利用自研路由守卫与高阶组件（HOC），配合前端路由懒加载，实现动态菜单在流式渲染下的秒级响应与越权拦截。
-* 💾 **大文件导入内存控顶优化**：针对百兆级大型 Excel 批量导入导致 JVM OOM 的合规风险，引入 **Alibaba EasyExcel 结合流式解析算法**。基于事件驱动的读写模型，将内存占用从百兆级降至兆级（Constant Memory），保障高并发导入时的内存稳定性。
-* 🐳 **全沙箱容器化部署（安全硬化）**：推行“最小暴露面”原则。通过 **Docker Compose 构建强隔离的网络沙箱环境**，全面禁用外网直连，采用 SSH Tunnel 隧道双重认证与白名单机制硬化底层 MySQL / Redis 存储，彻底阻断未授权访问风险。
+Enterprise Admin Matrix（EAM）是一个基于 **Spring Boot + React** 的前后端分离后台管理系统。
 
----
+项目采用现代 Web 全栈开发技术，围绕企业中后台系统常见需求进行设计，实现了：
 
-## 🛠️ 核心技术栈
+- 用户认证与授权
+- RBAC 权限管理
+- Dashboard 数据统计
+- 操作日志审计
+- 动态表单引擎
+- Excel 数据导入导出
+- Docker 容器化部署
 
-### 后端架构 (Backend)
-* **核心框架**：Spring Boot 3.x
-* **安全引擎**：Spring Security + JWT（无状态、跨域友好）
-* **数据持久层**：MyBatis + MySQL 8.x（索引调优、读写防注入）
-* **工程构建**：Gradle（声明式依赖管理、增量构建优化）
-* **基础设施**：Docker / Docker Compose（沙箱硬化部署）
-
-### 前端工程 (Frontend)
-* **核心框架**：React 18（并发模式、Hooks 函数式组件）
-* **语言特性**：TypeScript（全链路严格类型约束）
-* **状态管理**：Redux Toolkit（切片化状态治理）
-* **UI 基础设施**：Ant Design + Tailwind CSS（原子化样式与组件化封装）
-* **数据可视化**：ECharts（动态流式数据渲染）
-* **构建工具**：Vite（基于 ESM 的极速热更新与打包调优）
+整个项目遵循前后端分离架构，适合作为企业后台管理系统、权限管理系统、SaaS 平台基础脚手架，也可作为 Spring Boot + React 全栈学习项目。
 
 ---
 
-## 📦 平台功能矩阵
+# ✨ 核心特性
 
-```text
-EAM 平台底层
- ├── 💡 认证与效能基础设施
- │    ├── JWT 令牌无状态签发与秒级失效策略
- │    ├── AOP 异步线程池审计日志切面 (Operation Log)
- │    └── Schema 驱动动态表单渲染引擎 (元数据配置)
- ├── 👥 精细化权限管控 (RBAC Framework)
- │    ├── 用户/角色/权限 多对多矩阵映射
- │    └── 按钮级 (Button-level) 权限拦截器
- └── 📊 核心业务领域集成 (以教育/组织管理场景为例)
-      ├── 班级/教师/学生 多维关联实体域
-      ├── 跨域数据看板 (Dashboard 聚合统计)
-      └── 流式 Excel 批量数据导入/导出
+## 🔐 Spring Security + JWT 身份认证
 
+- Spring Security 实现统一认证授权
+- JWT 无状态 Token 登录
+- 登录拦截
+- Token 自动校验
+- 接口权限控制
+- 前后端分离认证方案
 
+---
+
+## 🛡 RBAC 权限管理
+
+采用经典 RBAC（Role-Based Access Control）权限模型，实现：
+
+- 用户管理
+- 角色管理
+- 权限管理
+- 用户-角色关联
+- 角色-权限关联
+- 动态菜单生成
+- 按钮级权限控制
+- 路由级权限控制
+
+真正做到前后端统一权限控制。
+
+---
+
+## 📊 Dashboard 数据看板
+
+Dashboard 首页提供系统运行概览，包括：
+
+- 学生数量统计
+- 教师数量统计
+- 班级数量统计
+- 科目数量统计
+- 学生性别比例
+- 班级学生分布
+
+基于 **ECharts** 实现可视化图表展示。
+
+---
+
+## 📝 操作日志（Operation Log）
+
+基于 **Spring AOP** 实现统一操作日志记录。
+
+支持记录：
+
+- 操作用户
+- 请求地址
+- 请求参数
+- 操作时间
+- IP 地址
+- 执行结果
+- 执行耗时
+
+日志异步写入数据库，减少对业务请求的影响。
+
+---
+
+## ⚙️ Schema 动态表单引擎
+
+实现了基于 Schema 的动态表单渲染。
+
+一个 Schema 即可描述：
+
+- 表单布局
+- 字段类型
+- 校验规则
+- 默认值
+- 是否禁用
+- Select 数据源
+
+前端根据 Schema 自动生成表单，无需重复开发 CRUD 页面。
+
+---
+
+## 📂 Excel 导入导出
+
+基于 Alibaba EasyExcel 实现：
+
+- Excel 导入
+- Excel 导出
+- 模板下载
+- 数据校验
+- 批量导入
+
+采用流式读取方式，降低大量数据导入时的内存占用。
+
+---
+
+## 🐳 Docker 部署
+
+提供 Docker Compose 部署方案。
+
+包含：
+
+- Spring Boot
+- MySQL
+- Redis（可选）
+- Nginx（可选）
+
+支持快速部署整个项目。
 
 ---
 
@@ -66,52 +140,88 @@ EAM 平台底层
 
 ## 后端
 
-| 技术 | 说明 |
-|------|------|
-| Spring Boot 3 | Web 开发框架 |
-| Spring Security | 登录认证、权限控制 |
-| JWT | Token 无状态认证 |
-| MyBatis | ORM 持久层 |
-| MySQL | 数据库 |
-| Gradle | 项目构建工具 |
-| Docker | 容器化部署 |
+- Spring Boot 3
+- Spring Security
+- JWT
+- MyBatis
+- MySQL 8
+- EasyExcel
+- Lombok
+- Gradle
 
 ---
 
 ## 前端
 
-| 技术 | 说明 |
-|------|------|
-| React 18 | 前端框架 |
-| TypeScript | 类型支持 |
-| React Router | 路由管理 |
-| Redux Toolkit | 状态管理 |
-| Ant Design | UI 组件库 |
-| Axios | HTTP 请求 |
-| ECharts | Dashboard 数据可视化 |
-| Tailwind CSS | 页面样式 |
-| Vite | 构建工具 |
+- React 18
+- TypeScript
+- Redux Toolkit
+- React Router
+- Axios
+- Ant Design
+- Tailwind CSS
+- ECharts
+- Vite
 
 ---
 
+# 📦 功能模块
+
+```text
+EAM
+│
+├── Dashboard 数据看板
+├── 登录认证
+├── 用户中心
+│
+├── 用户管理
+├── 角色管理
+├── 权限管理
+│
+├── 学生管理
+├── 教师管理
+├── 班级管理
+├── 科目管理
+│
+├── 操作日志
+├── 动态表单引擎
+│
+├── Excel 导入
+└── Excel 导出
+```
+
 ---
 
-# 👤 演示账号权限
+# 📷 系统预览
+
+> 建议放项目截图
+
+- 登录页
+- Dashboard
+- 用户管理
+- 权限管理
+- 学生管理
+- 操作日志
+- 动态表单
+
+---
+
+# 👤 演示账号
 
 | 用户 | 角色 | 学生查询 | 学生新增 | 学生修改 | 学生删除 | Excel导入 | Excel导出 | 用户管理 | 角色管理 | 权限管理 |
 |------|------|:------:|:------:|:------:|:------:|:------:|:------:|:------:|:------:|:------:|
 | admin | Admin | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| 张世伟 | 班主任 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | 👀仅查看 | 👀仅查看 | 👀仅查看 |
+| 张世伟 | 班主任 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | 👀 查看 | 👀 查看 | 👀 查看 |
 | 刘永进 | 普通教师 | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | 后勤 | 后勤 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 
-> 👀 表示拥有查看权限，但无新增、修改、删除权限。
+> 👀 表示拥有查看权限，无新增、修改、删除权限。
 
 ---
 
 # 🌐 在线体验
 
-**演示地址**
+**Demo**
 
 http://47.96.121.113:9006/app-react/login
 
@@ -119,18 +229,43 @@ http://47.96.121.113:9006/app-react/login
 
 # 📂 项目地址
 
-## 前端（React）
+## 前端
 
 https://github.com/Catcheer/micro-frontend-project/tree/feat_login/react-project
 
-## 后端（Spring Boot）
+## 后端
 
 https://github.com/Catcheer/springBootDemo
 
 ---
 
-# ⭐ Star 支持
+# 🚀 快速启动
 
-如果这个项目对你有所帮助，欢迎 **Star ⭐** 支持一下。
+## 克隆项目
 
-如果你有更好的建议，欢迎提交 **Issue** 或 **Pull Request**，一起交流学习，共同完善这个项目！
+```bash
+git clone https://github.com/Catcheer/springBootDemo.git
+```
+
+### 后端
+
+```bash
+cd springBootDemo
+./gradlew bootRun
+```
+
+### 前端
+
+```bash
+npm install
+npm run dev
+```
+
+---
+
+
+# ⭐ Star
+
+如果这个项目对你有所帮助，欢迎点一个 **Star ⭐**。
+
+如果有建议或发现问题，也欢迎提交 **Issue** 或 **Pull Request**。
