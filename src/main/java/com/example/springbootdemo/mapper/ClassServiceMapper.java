@@ -2,11 +2,13 @@ package com.example.springbootdemo.mapper;
 
 import com.example.springbootdemo.dto.ClassQuery;
 import com.example.springbootdemo.model.ClassInfo;
+import com.example.springbootdemo.model.ClassStudent;
 import com.example.springbootdemo.model.ClassVo;
 import com.example.springbootdemo.model.TeacherClassAssignmentVo;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -30,4 +32,8 @@ public interface ClassServiceMapper {
 
     @Delete("DELETE FROM `class` WHERE id = #{id}")
     void delClass(int id);
+     
+    @Select("select c.class_name, COUNT(*) as student_count   from class c JOIN student s ON c.id = s.class_id group by c.class_name;")
+     List<ClassStudent> getClassesWithStudentCount();
+          
 }

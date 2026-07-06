@@ -17,7 +17,14 @@ public class SubjectServiceImpl implements SubjectService{
    @Override
    public List<SubjectVo> getAllSubjects() {
     return subjectServiceMapper.selectAllSubjects();
+
+
    }
+
+    @Override
+    public long count() {
+        return subjectServiceMapper.count();
+    }
 
 //    @Override
 //    public void addTeacherSubject(SubjectVo subject) {

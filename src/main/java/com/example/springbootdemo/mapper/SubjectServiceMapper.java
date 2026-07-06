@@ -39,4 +39,7 @@ public interface SubjectServiceMapper {
 
     @Delete("DELETE FROM teacher_subject WHERE teacher_id = #{teacherId}")
     void deleteTeacherSubjects(@Param("teacherId") int teacherId);
+
+    @Select("SELECT COUNT(*) FROM subject")
+    long count();
 }

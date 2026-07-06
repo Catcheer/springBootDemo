@@ -10,6 +10,7 @@ import com.example.springbootdemo.model.Teacher;
 @Service
 public interface SubjectService {
     List<SubjectVo> getAllSubjects();
+    long count();
 
     // void addTeacherSubject(int teacherId,int  subjectId);
 }

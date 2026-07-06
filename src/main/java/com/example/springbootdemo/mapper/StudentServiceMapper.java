@@ -1,6 +1,7 @@
 package com.example.springbootdemo.mapper;
 
 import com.example.springbootdemo.dto.StudentQuery;
+import com.example.springbootdemo.model.GenderDistribution;
 import com.example.springbootdemo.model.Student;
 import org.apache.ibatis.annotations.*;
 
@@ -31,4 +32,8 @@ public interface StudentServiceMapper {
 
     List<Student> getStudentsForExport(
             @Param("query") StudentQuery query);
+
+
+    @Select("select gender, COUNT(*) as totalStudents from student group by gender;")
+    List<GenderDistribution> getGenderDistributions();
 }
